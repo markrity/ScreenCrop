@@ -34,8 +34,8 @@ class ScreenCap(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
 
-        self.frame_width = (root.winfo_screenwidth() / 2)
-        self.frame_height = (root.winfo_screenheight() / 2 + 50)
+        self.frame_width = (root.winfo_screenwidth() / 2 + 10)
+        self.frame_height = (root.winfo_screenheight() / 2 + 55)
         self.parent.minsize(int(self.frame_width), int(self.frame_height))
 
         # Main grid and container configuration
