@@ -14,14 +14,17 @@ class ResizingCanvas(Canvas):
 
     def on_resize(self, event):
         # determine the ratio of old width/height to new width/height
-        wscale = float(event.width) / self.width
-        hscale = float(event.height) / self.height
-        self.width = event.width
-        self.height = event.height
+        scaleWidth = float(event.width) / self.width
+        scaleHeight = float(event.height) / self.height
+
+        minScale = min(scaleWidth, scaleHeight)
+
+        self.width = event.width * minScale
+        self.height = event.height * minScale
         # resize the canvas
         self.config(width=self.width, height=self.height)
-        # rescale all the objects tagged with the "all" tag
-        self.scale("IMG", 0, 0, wscale, hscale)
+        # rescale all the objects tagged with the "ALL" tag
+        self.scale("ALL", 0, 0, minScale, minScale)
 
 
 class ScreenCap(Frame):
@@ -55,8 +58,11 @@ class ScreenCap(Frame):
         # Row and column configuration to allow resizing
         self.top_frame.grid_rowconfigure(0, weight=1)
         self.top_frame.grid_columnconfigure(0, weight=1)
-        self.bottom_frame.grid_rowconfigure(1, weight=1)
+
+        """
+        self.bottom_frame.grid_rowconfigure(0, weight=1)
         self.bottom_frame.grid_columnconfigure(1, weight=1)
+        """
 
         # A frame to hold the buttons and seperate them from the rest of the
         # GUI
@@ -86,33 +92,38 @@ class ScreenCap(Frame):
         self.image = ImageTk.PhotoImage(self.original)
         self.display = ResizingCanvas(self.top_frame, highlightthickness=0)
         self.display.grid(row=0, column=0, sticky="nsew")
-        """
         self.display.grid_rowconfigure(0, weight=1)
         self.display.grid_columnconfigure(0, weight=1)
-        """
 
         self.display.create_image(0, 0, image=self.image, anchor="nw",
                                   tags="IMG")
 
         # Event bindings
-        self.bind("<Configure>", self.resize)
+        self.main_container.bind("<Configure>", self.resize)
         self.display.bind('<Motion>', self.motion)
-
-        #self.pack(fill=BOTH, padx=15, pady=15)
 
     def motion(self, event):
         x, y = event.x, event.y
         print('{}, {}'.format(x, y))
 
     def resize(self, event):
-        size = (event.width, event.height)
+
+        # Calculate scale ratio
+        scaleWidth = float(event.width) / self.display.width
+        scaleHeight = float(event.height) / self.display.height
+
+        # Get minimum scaling ratio
+        scale = min(scaleWidth, scaleHeight)
+
+        # Use minimal scaling ratio to scale image
+        size = int(event.width * scale), int(event.height * scale)
+
+        # Delete previus image and create a new scale image
         resized = self.original.resize(size, Image.ANTIALIAS)
         self.image = ImageTk.PhotoImage(resized)
         self.display.delete("IMG")
-        self.display.create_image(
-            0, 0, image=self.image, anchor=NW, tags="IMG")
-
-    """ Cancel button event for quiting the module """
+        self.display.create_image(0, 0, image=self.image, anchor=NW,
+                                  tags="IMG")
 
     def quit(self):
         self.destroy()
