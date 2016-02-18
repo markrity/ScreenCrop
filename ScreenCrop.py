@@ -19,12 +19,12 @@ class ResizingCanvas(Canvas):
 
         minScale = min(scaleWidth, scaleHeight)
 
-        self.width = event.width * minScale
-        self.height = event.height * minScale
+        self.width = int(event.width * minScale)
+        self.height = int(event.height * minScale)
         # resize the canvas
         self.config(width=self.width, height=self.height)
         # rescale all the objects tagged with the "ALL" tag
-        self.scale("ALL", 0, 0, minScale, minScale)
+        self.scale("GRID", 0, 0, minScale, minScale)
 
 
 class ScreenCap(Frame):
@@ -34,8 +34,8 @@ class ScreenCap(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
 
-        self.frame_width = root.winfo_screenwidth() / 2
-        self.frame_height = root.winfo_screenheight() / 2
+        self.frame_width = (root.winfo_screenwidth() / 2)
+        self.frame_height = (root.winfo_screenheight() / 2 + 50)
         self.parent.minsize(int(self.frame_width), int(self.frame_height))
 
         # Main grid and container configuration
@@ -88,8 +88,12 @@ class ScreenCap(Frame):
         self.buttonCancel.grid(row=0, column=2, sticky="e")
 
         """ Set screen capture in canvas """
+        size = int(
+            root.winfo_screenwidth() / 2), int(root.winfo_screenheight() / 2)
         self.original = Image.open(path)
-        self.image = ImageTk.PhotoImage(self.original)
+        self.resized = self.original.resize(size, Image.ANTIALIAS)
+        self.image = ImageTk.PhotoImage(self.resized)
+
         self.display = ResizingCanvas(self.top_frame, highlightthickness=0)
         self.display.grid(row=0, column=0, sticky="nsew")
         self.display.grid_rowconfigure(0, weight=1)
@@ -99,7 +103,7 @@ class ScreenCap(Frame):
                                   tags="IMG")
 
         # Event bindings
-        self.main_container.bind("<Configure>", self.resize)
+        # self.main_container.bind("<Configure>", self.resize)
         self.display.bind('<Motion>', self.motion)
 
     def motion(self, event):
@@ -153,6 +157,8 @@ if __name__ == '__main__':
 
     # Create instance of UI
     root = Tk()
+    root.geometry("0x0+0+0")
+    root.resizable(width=FALSE, height=FALSE)
     root.title("Screen Crop")
     # root.state('zoomed')
 
