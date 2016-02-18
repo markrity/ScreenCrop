@@ -18,11 +18,10 @@ class ResizingCanvas(Canvas):
         hscale = float(event.height) / self.height
         self.width = event.width
         self.height = event.height
-        if (wscale / hscale == self.width / self.height):
-            # resize the canvas
-            self.config(width=self.width, height=self.height)
-            # rescale all the objects tagged with the "all" tag
-            self.scale("IMG", 0, 0, wscale, hscale)
+        # resize the canvas
+        self.config(width=self.width, height=self.height)
+        # rescale all the objects tagged with the "all" tag
+        self.scale("IMG", 0, 0, wscale, hscale)
 
 
 class ScreenCap(Frame):
@@ -34,46 +33,72 @@ class ScreenCap(Frame):
 
         self.frame_width = root.winfo_screenwidth() / 2
         self.frame_height = root.winfo_screenheight() / 2
+        self.parent.minsize(int(self.frame_width), int(self.frame_height))
 
-        # Frame initialtion
-        self.canvas_frame = Frame(self, width=self.frame_width,
-                                  height=self.frame_height)
-        self.buttons_frame = Frame(self, width=self.frame_width)
+        # Main grid and container configuration
+        self.parent.grid_rowconfigure(0, weight=1)
+        self.parent.grid_columnconfigure(0, weight=1)
+        self.main_container = Frame(self.parent)
+        self.main_container.grid(row=0, column=0, sticky="nsew")
+        self.main_container.grid_rowconfigure(0, weight=1)
+        self.main_container.grid_columnconfigure(0, weight=1)
 
-        # Buttons initiation
-        self.buttonSave = Button(self.buttons_frame, text='Save')
-        self.buttonCancel = Button(
-            self.buttons_frame, text='Cancel', command=self.quit)
+        # Deviding the main container to two seperated parts
+        self.top_frame = Frame(self.main_container, relief="groove",
+                               borderwidth=3, padx=2, pady=5)
+        self.bottom_frame = Frame(self.main_container)
 
-        # Packing frames, canvas and buttons
-        self.canvas_frame.pack(fill=BOTH, expand=YES)
-        self.buttons_frame.pack(side=BOTTOM)
-        self.buttonSave.pack(side=LEFT, padx=5, pady=5)
-        self.buttonCancel.pack(side=LEFT, padx=5, pady=5)
+        # Positioning top_frame and bottom_frame in grid
+        self.top_frame.grid(row=0, column=0, sticky="nsew")
+        self.bottom_frame.grid(row=1, column=0, sticky="nsew")
 
-        ''' Set screen capture in canvas '''
-        # Use the image we took at the main function of the module
+        # Row and column configuration to allow resizing
+        self.top_frame.grid_rowconfigure(0, weight=1)
+        self.top_frame.grid_columnconfigure(0, weight=1)
+        self.bottom_frame.grid_rowconfigure(1, weight=1)
+        self.bottom_frame.grid_columnconfigure(1, weight=1)
+
+        # A frame to hold the buttons and seperate them from the rest of the
+        # GUI
+        self.button_frame = Frame(self.bottom_frame)
+        self.button_frame.grid(row=1, column=0, sticky="nsew", columnspan=3,
+                               padx=5, pady=5)
+        """
+        self.button_frame.grid_rowconfigure(1, weight=1)
+        self.button_frame.grid_columnconfigure(1, weight=1)
+        """
+
+        # Button objects initiation
+        self.buttonSave = Button(self.button_frame, text='Save',
+                                 command=self.save)
+        self.buttonCancel = Button(self.button_frame, text='Cancel',
+                                   command=self.quit)
+        self.ButtonBrowse = Button(self.button_frame, text='Browse',
+                                   command=self.browse)
+
+        # Button positioning in grid
+        self.buttonSave.grid(row=0, column=0, sticky="w")
+        self.ButtonBrowse.grid(row=0, column=1, sticky="n")
+        self.buttonCancel.grid(row=0, column=2, sticky="e")
+
+        """ Set screen capture in canvas """
         self.original = Image.open(path)
         self.image = ImageTk.PhotoImage(self.original)
-        # Initiat a resizeable canvas that would scale the image to the
-        # canvas size and ratio
-        self.display = ResizingCanvas(
-            self.canvas_frame, bd=0, highlightthickness=0,
-            borderwidth=2,
-            relief=RIDGE)
-        # Set the screen capture on the canvas
-        self.display.create_image(
-            0, 0, image=self.image, anchor=NW, tags="IMG")
-        # Set a grid and pack the display canvas
-        self.display.grid(row=0, sticky=W + E + N + S)
-        self.display.pack(fill=BOTH, expand=YES)
+        self.display = ResizingCanvas(self.top_frame, highlightthickness=0)
+        self.display.grid(row=0, column=0, sticky="nsew")
+        """
+        self.display.grid_rowconfigure(0, weight=1)
+        self.display.grid_columnconfigure(0, weight=1)
+        """
+
+        self.display.create_image(0, 0, image=self.image, anchor="nw",
+                                  tags="IMG")
 
         # Event bindings
         self.bind("<Configure>", self.resize)
         self.display.bind('<Motion>', self.motion)
 
-        # Pack frame
-        self.pack(fill=BOTH, expand=1, padx=20, pady=20)
+        #self.pack(fill=BOTH, padx=15, pady=15)
 
     def motion(self, event):
         x, y = event.x, event.y
@@ -87,26 +112,38 @@ class ScreenCap(Frame):
         self.display.create_image(
             0, 0, image=self.image, anchor=NW, tags="IMG")
 
+    """ Cancel button event for quiting the module """
+
     def quit(self):
         self.destroy()
         self.parent.destroy()
 
+    def save(self):
+        print("Save")
+
+    def browse(self):
+        print("Browse")
+
 
 if __name__ == '__main__':
-    # Create temporary path and directory
+    """ Main entry point to module """
+    # Path to temporary directory
     tempPath = os.path.dirname(os.path.realpath(__file__)) + '\\temporary'
 
+    # Create temporary directory
     if not os.path.exists(tempPath):
         os.makedirs(tempPath)
 
     tempPath = tempPath + '\\screencap.png'
 
+    # Take screen shot and save it in the temporary directory
     screen = ImageGrab.grab()
     screen.save(tempPath)
 
+    # Create instance of UI
     root = Tk()
     root.title("Screen Crop")
-    root.state('zoomed')
+    # root.state('zoomed')
 
     app = ScreenCap(root, tempPath)
 
