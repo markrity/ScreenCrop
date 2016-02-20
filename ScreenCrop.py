@@ -5,132 +5,72 @@ from PIL import Image, ImageTk
 from PIL import ImageGrab
 
 
-class ResizingCanvas(Canvas):
-    def __init__(self, parent, **kwargs):
-        Canvas.__init__(self, parent, **kwargs)
-        self.bind("<Configure>", self.on_resize)
-        self.height = self.winfo_reqheight()
-        self.width = self.winfo_reqwidth()
-
-    def on_resize(self, event):
-        # determine the ratio of old width/height to new width/height
-        scaleWidth = float(event.width) / self.width
-        scaleHeight = float(event.height) / self.height
-
-        minScale = min(scaleWidth, scaleHeight)
-
-        self.width = int(event.width * minScale)
-        self.height = int(event.height * minScale)
-        # resize the canvas
-        self.config(width=self.width, height=self.height)
-        # rescale all the objects tagged with the "ALL" tag
-        self.scale("GRID", 0, 0, minScale, minScale)
-
-
-class ScreenCap(Frame):
+class ScreenCrop(Frame):
     """docstring for ClassName"""
 
     def __init__(self, parent, path):
         Frame.__init__(self, parent)
+
+        self.trace = 0
+        self.drawn = None
+
         self.parent = parent
 
-        self.frame_width = (root.winfo_screenwidth() / 2 + 10)
-        self.frame_height = (root.winfo_screenheight() / 2 + 55)
+        self.frame_width = root.winfo_screenwidth() / 2
+        self.frame_height = root.winfo_screenheight() / 2
+
         self.parent.minsize(int(self.frame_width), int(self.frame_height))
 
-        # Main grid and container configuration
-        self.parent.grid_rowconfigure(0, weight=1)
-        self.parent.grid_columnconfigure(0, weight=1)
-        self.main_container = Frame(self.parent)
-        self.main_container.grid(row=0, column=0, sticky="nsew")
-        self.main_container.grid_rowconfigure(0, weight=1)
-        self.main_container.grid_columnconfigure(0, weight=1)
+        self.main_frame = Frame(self)
+        self.main_frame.pack(side="top", fill="both", expand=True)
 
-        # Deviding the main container to two seperated parts
-        self.top_frame = Frame(self.main_container, relief="groove",
-                               borderwidth=3, padx=2, pady=5)
-        self.bottom_frame = Frame(self.main_container)
+        self.display = Canvas(self.main_frame, highlightthickness=0)
+        self.display.pack(side="top", fill="both", expand=True)
 
-        # Positioning top_frame and bottom_frame in grid
-        self.top_frame.grid(row=0, column=0, sticky="nsew")
-        self.bottom_frame.grid(row=1, column=0, sticky="nsew")
-
-        # Row and column configuration to allow resizing
-        self.top_frame.grid_rowconfigure(0, weight=1)
-        self.top_frame.grid_columnconfigure(0, weight=1)
-
-        """
-        self.bottom_frame.grid_rowconfigure(0, weight=1)
-        self.bottom_frame.grid_columnconfigure(1, weight=1)
-        """
-
-        # A frame to hold the buttons and seperate them from the rest of the
-        # GUI
-        self.button_frame = Frame(self.bottom_frame)
-        self.button_frame.grid(row=1, column=0, sticky="nsew", columnspan=3,
-                               padx=5, pady=5)
-        """
-        self.button_frame.grid_rowconfigure(1, weight=1)
-        self.button_frame.grid_columnconfigure(1, weight=1)
-        """
-
-        # Button objects initiation
-        self.buttonSave = Button(self.button_frame, text='Save',
-                                 command=self.save)
-        self.buttonCancel = Button(self.button_frame, text='Cancel',
-                                   command=self.quit)
-        self.ButtonBrowse = Button(self.button_frame, text='Browse',
-                                   command=self.browse)
-
-        # Button positioning in grid
-        self.buttonSave.grid(row=0, column=0, sticky="w")
-        self.ButtonBrowse.grid(row=0, column=1, sticky="n")
-        self.buttonCancel.grid(row=0, column=2, sticky="e")
-
-        """ Set screen capture in canvas """
-        size = int(
-            root.winfo_screenwidth() / 2), int(root.winfo_screenheight() / 2)
         self.original = Image.open(path)
-        self.resized = self.original.resize(size, Image.ANTIALIAS)
-        self.image = ImageTk.PhotoImage(self.resized)
-
-        self.display = ResizingCanvas(self.top_frame, highlightthickness=0)
-        self.display.grid(row=0, column=0, sticky="nsew")
-        self.display.grid_rowconfigure(0, weight=1)
-        self.display.grid_columnconfigure(0, weight=1)
+        self.image = ImageTk.PhotoImage(self.original)
 
         self.display.create_image(0, 0, image=self.image, anchor="nw",
                                   tags="IMG")
 
         # Event bindings
-        # self.main_container.bind("<Configure>", self.resize)
-        self.display.bind('<Motion>', self.motion)
+        self.parent.bind("<Escape>", self.quit)
+        self.display.bind("<ButtonPress-1>", self.onStart)
+        self.display.bind("<B1-Motion>", self.onGrow)
+        self.display.bind('<Double-1>', self.onClear)
+        self.display.bind('<ButtonPress-3>', self.onMove)
 
-    def motion(self, event):
-        x, y = event.x, event.y
-        print('{}, {}'.format(x, y))
+        self.pack(fill="both", expand=True)
 
-    def resize(self, event):
+    def onStart(self, event):
+        self.shape = self.display.create_rectangle
+        self.start = event
+        self.drawn = None
+        event.widget.delete('DRAWN')
 
-        # Calculate scale ratio
-        scaleWidth = float(event.width) / self.display.width
-        scaleHeight = float(event.height) / self.display.height
+    def onGrow(self, event):
+        self.display = event.widget
+        if self.drawn:
+            self.display.delete(self.drawn)
+        objectId = self.shape(self.start.x, self.start.y, event.x, event.y,
+                              outline='red', width=3, tags="DRAWN")
+        if self.trace:
+            print(objectId)
+        self.drawn = objectId
 
-        # Get minimum scaling ratio
-        scale = min(scaleWidth, scaleHeight)
+    def onClear(self, event):
+        event.widget.delete('DRAWN')
 
-        # Use minimal scaling ratio to scale image
-        size = int(event.width * scale), int(event.height * scale)
+    def onMove(self, event):
+        if self.drawn:
+            if self.trace:
+                print(self.drawn)
+            self.display = event.widget
+            diffX, diffY = (event.x - self.start.x), (event.y - self.start.y)
+            self.display.move(self.drawn, diffX, diffY)
+            self.start = event
 
-        # Delete previus image and create a new scale image
-        resized = self.original.resize(size, Image.ANTIALIAS)
-        self.image = ImageTk.PhotoImage(resized)
-        self.display.delete("IMG")
-        self.display.create_image(0, 0, image=self.image, anchor=NW,
-                                  tags="IMG")
-
-    def quit(self):
-        self.destroy()
+    def quit(self, event):
         self.parent.destroy()
 
     def save(self):
@@ -138,7 +78,6 @@ class ScreenCap(Frame):
 
     def browse(self):
         print("Browse")
-
 
 if __name__ == '__main__':
     """ Main entry point to module """
@@ -157,11 +96,10 @@ if __name__ == '__main__':
 
     # Create instance of UI
     root = Tk()
-    root.geometry("0x0+0+0")
-    root.resizable(width=FALSE, height=FALSE)
+    root.attributes("-fullscreen", True)
     root.title("Screen Crop")
     # root.state('zoomed')
 
-    app = ScreenCap(root, tempPath)
+    app = ScreenCrop(root, tempPath)
 
     app.mainloop()
