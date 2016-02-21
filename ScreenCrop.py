@@ -13,6 +13,7 @@ class ScreenCrop(Frame):
 
         self.trace = 0
         self.drawn = None
+        self.num_of_crops = 0
 
         self.parent = parent
 
@@ -35,7 +36,9 @@ class ScreenCrop(Frame):
 
         # Event bindings
         self.parent.bind("<Escape>", self.quit)
+        self.parent.bind('<Return>', self.save)
         self.display.bind("<ButtonPress-1>", self.onStart)
+        self.display.bind("<ButtonRelease-1>", self.onEnd)
         self.display.bind("<B1-Motion>", self.onGrow)
         self.display.bind('<Double-1>', self.onClear)
         self.display.bind('<ButtonPress-3>', self.onMove)
@@ -47,6 +50,9 @@ class ScreenCrop(Frame):
         self.start = event
         self.drawn = None
         event.widget.delete('DRAWN')
+
+    def onEnd(self, event):
+        self.end = event
 
     def onGrow(self, event):
         self.display = event.widget
@@ -73,8 +79,13 @@ class ScreenCrop(Frame):
     def quit(self, event):
         self.parent.destroy()
 
-    def save(self):
-        print("Save")
+    def save(self, event):
+        if self.drawn:
+            print(self.start.x, self.start.y)
+            print(self.end.x, self.end.y)
+            cropped = self.original.crop((self.start.x, self.start.y,
+                                          self.end.x, self.end.y))
+        cropped.show()
 
     def browse(self):
         print("Browse")
