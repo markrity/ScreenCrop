@@ -1,5 +1,6 @@
 
 import os
+import json
 from tkinter import *
 from PIL import Image, ImageTk
 from PIL import ImageGrab
@@ -8,23 +9,33 @@ from PIL import ImageGrab
 class ScreenCrop(Frame):
     """docstring for ClassName"""
 
-    def __init__(self, parent, path):
+    def __init__(self, parent, path, save_path, continuous_mode, rec_color,
+                        rec_width, image_format):
         Frame.__init__(self, parent)
-
-        self.trace = 0
-        self.drawn = None
-        self.num_of_crops = 0
-
         self.parent = parent
 
+        # Initial variables
+        self.trace = 0
+        self.drawn = None
+        self.croped_amout = 0
+        self.rec_color = rec_color
+        self.rec_width = rec_width
+        self.continuous_mode = continuous_mode
+        self.save_path = save_path
+        self.image_format = image_format
+
+        # Minimal frame sizes
         self.frame_width = root.winfo_screenwidth() / 2
         self.frame_height = root.winfo_screenheight() / 2
 
+        # Set minimal size
         self.parent.minsize(int(self.frame_width), int(self.frame_height))
 
+        # Initiate main frame
         self.main_frame = Frame(self)
         self.main_frame.pack(side="top", fill="both", expand=True)
 
+        # initiate canvas
         self.display = Canvas(self.main_frame, highlightthickness=0)
         self.display.pack(side="top", fill="both", expand=True)
 
@@ -59,7 +70,8 @@ class ScreenCrop(Frame):
         if self.drawn:
             self.display.delete(self.drawn)
         objectId = self.shape(self.start.x, self.start.y, event.x, event.y,
-                              outline='red', width=3, tags="DRAWN")
+                              outline=self.rec_color, width=self.rec_width,
+                              tags="DRAWN")
         if self.trace:
             print(objectId)
         self.drawn = objectId
@@ -85,32 +97,71 @@ class ScreenCrop(Frame):
             print(self.end.x, self.end.y)
             cropped = self.original.crop((self.start.x, self.start.y,
                                           self.end.x, self.end.y))
-        cropped.show()
+
+            cropped.save(self.save_path + '\\screencap' +
+                                   str(self.croped_amout + 1) +
+                                   self.image_format)
+
+            self.croped_amout += 1
+
+            if (self.continuous_mode == False):
+                self.quit(None)
 
     def browse(self):
         print("Browse")
 
 if __name__ == '__main__':
     """ Main entry point to module """
-    # Path to temporary directory
-    tempPath = os.path.dirname(os.path.realpath(__file__)) + '\\temporary'
+    # Path to temporary directory that will be created in the location
+    # of the module
+    tempPath = os.path.dirname(
+                        os.path.realpath(__file__)) + '\\temporary'
 
-    # Create temporary directory
+    # Path to the settings file
+    settingsJson = os.path.dirname(
+                             os.path.realpath(__file__)) + '\\settings.json'
+
+    # Path to where screen shots directory will be saved
+    defualtPath = os.path.dirname(
+                             os.path.realpath(__file__)) + '\\Screen Shots'
+
+    # Path to temporary screen shot
+    tempCap = tempPath + '\\screencap.png'
+
+    # Open settings file
+    with open(settingsJson, 'r+') as file:
+        settings = json.load(file)
+
+    if (settings['save_location'] == None):
+        settings['save_location']  = defualtPath
+
+    print(settings['save_location'])
+    print(settings['continuous_mode'])
+    print(settings['rec_color'])
+
+    # If doesn't exist, create temporary directory
     if not os.path.exists(tempPath):
         os.makedirs(tempPath)
 
-    tempPath = tempPath + '\\screencap.png'
+    # If doesn't exist, create screens shots save directory
+    if not os.path.exists(settings['save_location']):
+        os.makedirs(settings['save_location'])
 
     # Take screen shot and save it in the temporary directory
     screen = ImageGrab.grab()
-    screen.save(tempPath)
+    screen.save(tempCap)
 
     # Create instance of UI
     root = Tk()
     root.attributes("-fullscreen", True)
     root.title("Screen Crop")
-    # root.state('zoomed')
 
-    app = ScreenCrop(root, tempPath)
+    app = ScreenCrop(root,
+                                   tempCap,
+                                   settings['save_location'],
+                                   settings['continuous_mode'],
+                                   settings['rec_color'],
+                                   settings['rec_width'],
+                                   settings['image_format'])
 
     app.mainloop()
