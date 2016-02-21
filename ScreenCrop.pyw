@@ -11,7 +11,7 @@ class ScreenCrop(Frame):
     """docstring for ClassName"""
 
     def __init__(self, parent, path, save_path, continuous_mode, rec_color,
-                        rec_width, image_format):
+                 rec_width, image_format):
         Frame.__init__(self, parent)
         self.parent = parent
 
@@ -51,8 +51,9 @@ class ScreenCrop(Frame):
         self.display.bind("<ButtonPress-1>", self.onStart)
         self.display.bind("<ButtonRelease-1>", self.onEnd)
         self.display.bind("<B1-Motion>", self.onGrow)
+        self.display.bind("<B3-Motion>", self.onMove)
         self.display.bind('<Double-1>', self.onClear)
-        self.display.bind('<ButtonPress-3>', self.onMove)
+        # self.display.bind('<ButtonPress-3>', self.onMove)
 
         self.pack(fill="both", expand=True)
 
@@ -72,8 +73,6 @@ class ScreenCrop(Frame):
         objectId = self.shape(self.start.x, self.start.y, event.x, event.y,
                               outline=self.rec_color, width=self.rec_width,
                               tags="DRAWN")
-        if self.trace:
-            print(objectId)
         self.drawn = objectId
 
     def onClear(self, event):
@@ -81,8 +80,6 @@ class ScreenCrop(Frame):
 
     def onMove(self, event):
         if self.drawn:
-            if self.trace:
-                print(self.drawn)
             self.display = event.widget
             diffX, diffY = (event.x - self.start.x), (event.y - self.start.y)
             self.display.move(self.drawn, diffX, diffY)
@@ -93,42 +90,36 @@ class ScreenCrop(Frame):
 
     def save(self, event):
         if self.drawn:
-            print(self.start.x, self.start.y)
-            print(self.end.x, self.end.y)
             cropped = self.original.crop((self.start.x, self.start.y,
                                           self.end.x, self.end.y))
 
             cropped.save(self.save_path + '\\' +
-                                   datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
-                                   self.image_format)
+                         datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
+                         self.image_format)
 
-            if (self.continuous_mode == False):
-             self.quit(None)
+            if (self.continuous_mode is False):
+                self.quit(None)
 
         else:
             self.original.save(self.save_path + '\\' +
-                                   datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
-                                   self.image_format)
+                               datetime.now().strftime(
+                                '%Y-%m-%d_%H-%M-%S-%f') + self.image_format)
             self.quit(None)
-
-
-    def browse(self):
-        print("Browse")
 
 if __name__ == '__main__':
     """ Main entry point to module """
     # Path to temporary directory that will be created in the location
     # of the module
     tempPath = os.path.dirname(
-                        os.path.realpath(__file__)) + '\\temporary'
+        os.path.realpath(__file__)) + '\\temporary'
 
     # Path to the settings file
     settingsJson = os.path.dirname(
-                             os.path.realpath(__file__)) + '\\settings.json'
+        os.path.realpath(__file__)) + '\\settings.json'
 
     # Path to where screen shots directory will be saved
     defualtPath = os.path.dirname(
-                             os.path.realpath(__file__)) + '\\Screen Shots'
+        os.path.realpath(__file__)) + '\\Screen Shots'
 
     # Path to temporary screen shot
     tempCap = tempPath + '\\screencap.png'
@@ -137,12 +128,8 @@ if __name__ == '__main__':
     with open(settingsJson, 'r+') as file:
         settings = json.load(file)
 
-    if (settings['save_location'] == None):
-        settings['save_location']  = defualtPath
-
-    print(settings['save_location'])
-    print(settings['continuous_mode'])
-    print(settings['rec_color'])
+    if (settings['save_location'] is None):
+        settings['save_location'] = defualtPath
 
     # If doesn't exist, create temporary directory
     if not os.path.exists(tempPath):
@@ -162,11 +149,11 @@ if __name__ == '__main__':
     root.title("Screen Crop")
 
     app = ScreenCrop(root,
-                                   tempCap,
-                                   settings['save_location'],
-                                   settings['continuous_mode'],
-                                   settings['rec_color'],
-                                   settings['rec_width'],
-                                   settings['image_format'])
+                     tempCap,
+                     settings['save_location'],
+                     settings['continuous_mode'],
+                     settings['rec_color'],
+                     settings['rec_width'],
+                     settings['image_format'])
 
     app.mainloop()
