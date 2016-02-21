@@ -4,6 +4,7 @@ import json
 from tkinter import *
 from PIL import Image, ImageTk
 from PIL import ImageGrab
+from datetime import datetime
 
 
 class ScreenCrop(Frame):
@@ -17,7 +18,6 @@ class ScreenCrop(Frame):
         # Initial variables
         self.trace = 0
         self.drawn = None
-        self.croped_amout = 0
         self.rec_color = rec_color
         self.rec_width = rec_width
         self.continuous_mode = continuous_mode
@@ -98,14 +98,19 @@ class ScreenCrop(Frame):
             cropped = self.original.crop((self.start.x, self.start.y,
                                           self.end.x, self.end.y))
 
-            cropped.save(self.save_path + '\\screencap' +
-                                   str(self.croped_amout + 1) +
+            cropped.save(self.save_path + '\\' +
+                                   datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
                                    self.image_format)
 
-            self.croped_amout += 1
-
             if (self.continuous_mode == False):
-                self.quit(None)
+             self.quit(None)
+
+        else:
+            self.original.save(self.save_path + '\\' +
+                                   datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
+                                   self.image_format)
+            self.quit(None)
+
 
     def browse(self):
         print("Browse")
