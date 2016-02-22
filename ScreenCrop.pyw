@@ -14,7 +14,8 @@ __email__ = "livsMichael@gmail.com"
 
 class ScreenCrop(Frame):
     """
-    ScreenCrop is a module
+    ScreenCrop is a python module that delivers an easy and intuative way
+    to capture and crop screen shots.
     """
 
     #                               CLASS INITIALTION
@@ -63,7 +64,6 @@ class ScreenCrop(Frame):
         self.display.bind("<B1-Motion>", self.onGrow)
         self.display.bind("<B3-Motion>", self.onMove)
         self.display.bind('<Double-1>', self.onClear)
-        # self.display.bind('<ButtonPress-3>', self.onMove)
 
         self.pack(fill="both", expand=True)
 
@@ -73,16 +73,18 @@ class ScreenCrop(Frame):
     #                       mouse and keyboard events
     # -------------------------------------------------------------------------
 
-    # mouse button 1 press event
+    # Mouse button 1 press event
     def onStart(self, event):
         self.shape = self.display.create_rectangle
         self.start = event
         self.drawn = None
         event.widget.delete('DRAWN')
 
+    # Mouse button 1 release event
     def onEnd(self, event):
         self.end = event
 
+    # Mouse button 1 motion event
     def onGrow(self, event):
         self.display = event.widget
         if self.drawn:
@@ -92,11 +94,11 @@ class ScreenCrop(Frame):
                               tags="DRAWN")
         self.drawn = objectId
 
-    # -------------------------------------------------------------------------
+    # Mouse button 1 double click event
     def onClear(self, event):
         event.widget.delete('DRAWN')
 
-    # -------------------------------------------------------------------------
+    # Mouse button 3 move event
     def onMove(self, event):
         if self.drawn:
             self.display = event.widget
@@ -104,11 +106,11 @@ class ScreenCrop(Frame):
             self.display.move(self.drawn, diffX, diffY)
             self.start = event
 
-    # -------------------------------------------------------------------------
+    # Escape key pressed event
     def quit(self, event):
         self.parent.destroy()
 
-    # -------------------------------------------------------------------------
+    # Enter key pressed event
     def save(self, event):
         if self.drawn:
 
