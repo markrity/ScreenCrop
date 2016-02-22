@@ -1,3 +1,4 @@
+#!python3
 
 import os
 import json
@@ -6,9 +7,18 @@ from PIL import Image, ImageTk
 from PIL import ImageGrab
 from datetime import datetime
 
+__author__ = "Michael Livs"
+__version__ = "1.0"
+__email__ = "livsMichael@gmail.com"
+
 
 class ScreenCrop(Frame):
-    """docstring for ClassName"""
+    """
+    ScreenCrop is a module
+    """
+
+    #                               CLASS INITIALTION
+    # ===========================================
 
     def __init__(self, parent, path, save_path, continuous_mode, rec_color,
                  rec_width, image_format):
@@ -57,6 +67,13 @@ class ScreenCrop(Frame):
 
         self.pack(fill="both", expand=True)
 
+    #                               CLASS METHODS
+    # ===========================================
+
+    #                       mouse and keyboard events
+    # -------------------------------------------------------------------------
+
+    # mouse button 1 press event
     def onStart(self, event):
         self.shape = self.display.create_rectangle
         self.start = event
@@ -75,9 +92,11 @@ class ScreenCrop(Frame):
                               tags="DRAWN")
         self.drawn = objectId
 
+    # -------------------------------------------------------------------------
     def onClear(self, event):
         event.widget.delete('DRAWN')
 
+    # -------------------------------------------------------------------------
     def onMove(self, event):
         if self.drawn:
             self.display = event.widget
@@ -85,25 +104,53 @@ class ScreenCrop(Frame):
             self.display.move(self.drawn, diffX, diffY)
             self.start = event
 
+    # -------------------------------------------------------------------------
     def quit(self, event):
         self.parent.destroy()
 
+    # -------------------------------------------------------------------------
     def save(self, event):
         if self.drawn:
-            cropped = self.original.crop((self.start.x, self.start.y,
-                                          self.end.x, self.end.y))
 
+            left = 0
+            top = 0
+            width = 0
+            height = 0
+
+            # Take care of the cases that the crop box is out of the screen
+            # width and height.
+            if self.start.x < self.end.x:
+                left = self.start.x
+                width = self.end.x - self.start.x
+            else:
+                left = self.end.x
+                width = self.start.x - self.end.x
+
+            if self.start.y < self.end.y:
+                top = self.start.y
+                height = self.end.y - self.start.y
+            else:
+                top = self.end.y
+                height = self.start.y - self.end.y
+
+            box = (left, top, left + width, top + height)
+
+            # Crop the image
+            cropped = self.original.crop(box)
+
+            # Save the cropped image and name it with the current date and
+            # time
             cropped.save(self.save_path + '\\' +
                          datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
                          self.image_format)
 
-            if (self.continuous_mode is False):
+            if (not self.continuous_mode):
                 self.quit(None)
 
         else:
             self.original.save(self.save_path + '\\' +
                                datetime.now().strftime(
-                                '%Y-%m-%d_%H-%M-%S-%f') + self.image_format)
+                                   '%Y-%m-%d_%H-%M-%S-%f') + self.image_format)
             self.quit(None)
 
 if __name__ == '__main__':
@@ -147,6 +194,8 @@ if __name__ == '__main__':
     root = Tk()
     root.attributes("-fullscreen", True)
     root.title("Screen Crop")
+    root.wm_attributes("-topmost", 1)
+    root.focus_force()
 
     app = ScreenCrop(root,
                      tempCap,
