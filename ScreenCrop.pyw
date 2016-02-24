@@ -11,6 +11,8 @@ __author__ = "Michael Livs"
 __version__ = "1.0"
 __email__ = "livsMichael@gmail.com"
 
+root = None
+
 
 class ScreenCrop(Frame):
     """
@@ -155,7 +157,8 @@ class ScreenCrop(Frame):
                                    '%Y-%m-%d_%H-%M-%S-%f') + self.image_format)
             self.quit(None)
 
-if __name__ == '__main__':
+
+def main():
     """ Main entry point to module """
     # Path to temporary directory that will be created in the location
     # of the module
@@ -193,6 +196,7 @@ if __name__ == '__main__':
     screen.save(tempCap)
 
     # Create instance of UI
+    global root
     root = Tk()
     root.attributes("-fullscreen", True)
     root.title("Screen Crop")

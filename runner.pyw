@@ -1,6 +1,6 @@
 #!python2
 
-import os
+import ScreenCrop
 import pythoncom
 from pyHook import HookManager, HookConstants
 
@@ -8,7 +8,7 @@ from pyHook import HookManager, HookConstants
 def OnKeyboardEvent(event):
     # in case you want to debug: uncomment next line
     if event.KeyID == HookConstants.VKeyToID('VK_SNAPSHOT'):
-        os.system("ScreenCrop.pyw")
+        ScreenCrop.main()
 
     return True
 
