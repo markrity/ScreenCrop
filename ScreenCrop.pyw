@@ -1,4 +1,4 @@
-#!python3
+#!python34
 
 import os
 import json
