@@ -1,11 +1,22 @@
 #!python34
 
+
+# Path and file naming
 import os
+# Module settings
 import json
+# GUI
 from tkinter import *
+# Image scaling
 from PIL import Image, ImageTk
+# Screen capture
 from PIL import ImageGrab
+# File naming
 from datetime import datetime
+# Imgur.com api
+import pyimgur
+# Copy to clipboard
+from pyperclip import copy
 
 __author__ = "Michael Livs"
 __version__ = "1.0"
@@ -17,7 +28,7 @@ root = None
 class ScreenCrop(Frame):
     """
     ScreenCrop is a python module that delivers an easy and intuative way
-    to capture and crop screen shots.
+    to capture, crop and upload screen shots.
     """
 
     #                               CLASS INITIALTION
@@ -31,11 +42,16 @@ class ScreenCrop(Frame):
         # Initial variables
         self.trace = 0
         self.drawn = None
+
+        # Settings
         self.rec_color = rec_color
         self.rec_width = rec_width
         self.continuous_mode = continuous_mode
         self.save_path = save_path
         self.image_format = image_format
+
+        # Client id from imgur api
+        self.CLIENT_ID = "be8b1a456528379"
 
         # Minimal frame sizes
         self.frame_width = root.winfo_screenwidth() / 2
@@ -114,6 +130,10 @@ class ScreenCrop(Frame):
 
     # Enter key pressed event
     def save(self, event):
+        image_name = datetime.now().strftime(
+            '%Y-%m-%d_%H-%M-%S-%f') + self.image_format
+        image_path = self.save_path + '\\' + image_name
+
         if self.drawn:
 
             left = 0
@@ -144,17 +164,18 @@ class ScreenCrop(Frame):
 
             # Save the cropped image and name it with the current date and
             # time
-            cropped.save(self.save_path + '\\' +
-                         datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') +
-                         self.image_format)
-
-            if (not self.continuous_mode):
-                self.quit(None)
+            cropped.save(image_path)
 
         else:
-            self.original.save(self.save_path + '\\' +
-                               datetime.now().strftime(
-                                   '%Y-%m-%d_%H-%M-%S-%f') + self.image_format)
+            self.original.save(image_path)
+
+        if (not self.continuous_mode):
+            self.parent.withdraw()
+            im = pyimgur.Imgur(self.CLIENT_ID)
+            uploaded_image = im.upload_image(image_path, title=image_name)
+            print(uploaded_image.title)
+            print(uploaded_image.link)
+            copy(uploaded_image.link)
             self.quit(None)
 
 

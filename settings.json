@@ -1,6 +1,6 @@
 {
   "save_location": null,
-  "continuous_mode":  true,
+  "continuous_mode":  false,
   "rec_color": "#ff3535",
   "rec_width": 2,
   "image_format": ".png"
