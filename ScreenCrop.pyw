@@ -30,8 +30,8 @@ class ScreenCrop(Frame):
     #                               CLASS INITIALTION
     # ===========================================
 
-    def __init__(self, parent, path, save_path, continuous_mode, rec_color,
-                 rec_width, image_format):
+    def __init__(self, parent, path, save_path, continuous_mode, imgur_upload,
+                 rec_color, rec_width, image_format):
         Frame.__init__(self, parent)
         self.parent = parent
 
@@ -40,11 +40,12 @@ class ScreenCrop(Frame):
         self.drawn = None
         self.uploaded_images = dict()
 
-        # Settings
+        # Init settings
+        self.save_path = save_path
+        self.continuous_mode = continuous_mode
+        self.imgur_upload = imgur_upload
         self.rec_color = rec_color
         self.rec_width = rec_width
-        self.continuous_mode = continuous_mode
-        self.save_path = save_path
         self.image_format = image_format
 
         # Client id from imgur api
@@ -168,7 +169,7 @@ class ScreenCrop(Frame):
             # screenshot
             self.original.save(image_path)
 
-        if (not self.continuous_mode):
+        if (not self.continuous_mode and self.imgur_upload):
             # TODO: find out how to upload albums to imgur
             # and enable uploading in continous mode
 
@@ -243,6 +244,7 @@ if __name__ == '__main__':
                      tempCap,
                      settings['save_location'],
                      settings['continuous_mode'],
+                     settings['imgur_upload'],
                      settings['rec_color'],
                      settings['rec_width'],
                      settings['image_format'])
