@@ -191,7 +191,8 @@ class ScreenCrop(Frame):
             image_upload = im.upload_image(image_path, title=image_name)
 
             # Save link in a dictionary
-            self.uploaded_images[image_name] = image_upload.link
+            self.uploaded_images["name"] = image_name
+            self.uploaded_images["link"] = image_upload.link
 
             print(self.uploaded_images)
             # Save link in local json for future use
