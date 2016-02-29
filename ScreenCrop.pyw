@@ -19,7 +19,7 @@ from datetime import datetime
 import pyimgur
 
 major, minor, micro, releaselevel, serial = sys.version_info
-if (major, minor) <= (2, 7):
+if (major, minor) < (2, 7):
     print("This module was not tested for any python version under 2.7.")
     sys.exit(2)
 
