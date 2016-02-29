@@ -1,12 +1,14 @@
-#!python34
-
-
+# Python version conformation
+import sys
 # Path and file naming
 import os
 # Module settings
 import json
 # GUI
-from tkinter import *
+try:
+    from tkinter import *
+except ImportError:
+    from Tkinter import *
 # Image scaling
 from PIL import Image, ImageTk
 # Screen capture
@@ -15,6 +17,12 @@ from PIL import ImageGrab
 from datetime import datetime
 # Imgur.com api
 import pyimgur
+
+major, minor, micro, releaselevel, serial = sys.version_info
+if (major, minor) <= (2, 7):
+    print("This module was not tested for any python version under 2.7.")
+    sys.exit(2)
+
 
 __author__ = "Michael Livs"
 __version__ = "1.0"
