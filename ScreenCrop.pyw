@@ -194,11 +194,14 @@ class ScreenCrop(Frame):
             self.uploaded_images["name"] = image_name
             self.uploaded_images["link"] = image_upload.link
 
-            print(self.uploaded_images)
             # Save link in local json for future use
             self.save_links()
             # Exit module
             self.quit(event)
+
+        elif(not self.continuous_mode and not self.imgur_upload):
+            self.parent.withdraw()
+            self.quit()
 
     def save_links(self):
         with open('links.json', 'w') as links_json:
