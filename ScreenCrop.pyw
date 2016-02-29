@@ -15,14 +15,10 @@ from PIL import ImageGrab
 from datetime import datetime
 # Imgur.com api
 import pyimgur
-# Copy to clipboard
-from pyperclip import copy
 
 __author__ = "Michael Livs"
 __version__ = "1.0"
 __email__ = "livsMichael@gmail.com"
-
-root = None
 
 
 class ScreenCrop(Frame):
@@ -42,6 +38,7 @@ class ScreenCrop(Frame):
         # Initial variables
         self.trace = 0
         self.drawn = None
+        self.uploaded_images = dict()
 
         # Settings
         self.rec_color = rec_color
@@ -54,8 +51,8 @@ class ScreenCrop(Frame):
         self.CLIENT_ID = "be8b1a456528379"
 
         # Minimal frame sizes
-        self.frame_width = root.winfo_screenwidth() / 2
-        self.frame_height = root.winfo_screenheight() / 2
+        self.frame_width = self.parent.winfo_screenwidth() / 2
+        self.frame_height = self.parent.winfo_screenheight() / 2
 
         # Set minimal size
         self.parent.minsize(int(self.frame_width), int(self.frame_height))
@@ -126,7 +123,7 @@ class ScreenCrop(Frame):
 
     # Escape key pressed event
     def quit(self, event):
-        self.parent.destroy()
+        self.parent.quit()
 
     # Enter key pressed event
     def save(self, event):
@@ -167,32 +164,51 @@ class ScreenCrop(Frame):
             cropped.save(image_path)
 
         else:
+            # If user did not select an area to crop, save full-screen
+            # screenshot
             self.original.save(image_path)
 
         if (not self.continuous_mode):
+            # TODO: find out how to upload albums to imgur
+            # and enable uploading in continous mode
+
+            # Hide window
             self.parent.withdraw()
+
+            # Connect to imgur using CLIENT_ID
             im = pyimgur.Imgur(self.CLIENT_ID)
-            uploaded_image = im.upload_image(image_path, title=image_name)
-            print(uploaded_image.title)
-            print(uploaded_image.link)
-            copy(uploaded_image.link)
-            self.quit(None)
 
+            # Upload image image to imgur
+            image_upload = im.upload_image(image_path, title=image_name)
 
-def main():
+            # Save link in a dictionary
+            self.uploaded_images[image_name] = image_upload.link
+
+            print(self.uploaded_images)
+            # Save link in local json for future use
+            self.save_links()
+            # Exit module
+            self.quit(event)
+
+    def save_links(self):
+        with open('links.json', 'w') as links_json:
+            json.dump(self.uploaded_images, links_json)
+
+if __name__ == '__main__':
+
     """ Main entry point to module """
     # Path to temporary directory that will be created in the location
     # of the module
     tempPath = os.path.dirname(
-        os.path.realpath(__file__)) + '\\temporary'
+        os.path.realpath('__file__')) + '\\temporary'
 
     # Path to the settings file
     settingsJson = os.path.dirname(
-        os.path.realpath(__file__)) + '\\settings.json'
+        os.path.realpath('__file__')) + '\\settings.json'
 
     # Path to where screen shots directory will be saved
     defualtPath = os.path.dirname(
-        os.path.realpath(__file__)) + '\\Screen Shots'
+        os.path.realpath('__file__')) + '\\Screen Shots'
 
     # Path to temporary screen shot
     tempCap = tempPath + '\\screencap.png'
@@ -217,7 +233,6 @@ def main():
     screen.save(tempCap)
 
     # Create instance of UI
-    global root
     root = Tk()
     root.attributes("-fullscreen", True)
     root.title("Screen Crop")

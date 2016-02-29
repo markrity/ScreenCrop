@@ -6,9 +6,8 @@ if sys.platform == 'win32':
     base = "Win32GUI"
 
 executables = [
-    cx_Freeze.Executable("runner.py", base=base, icon="camicon.ico")]
+    cx_Freeze.Executable("ScreenCrop.pyw", base=base, icon="camicon.ico")]
 
-packages = ["tkinter", "pythoncom", "pyHook", "ScreenCrop"]
 
 cx_Freeze.setup(
     name="ScreenCrop",
