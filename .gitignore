@@ -123,3 +123,5 @@ temporary/
 ScreenCropGui/ScreenCropGui/bin/
 ScreenCropGui/ScreenCropGui/obj/
 PyCropper/ScreenCropper.spec
+*.pdb
+ScreenCropGui/ScreenCropGui/obj/Debug/ScreenCrop.exe
