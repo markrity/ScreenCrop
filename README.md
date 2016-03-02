@@ -1,5 +1,5 @@
 # Screen Crop
-This tool allows you to easily crop and upload screen shots
+This tool allows you to easily crop and upload screen shots.
 
 ![Screen Crop action gif](https://github.com/InviBear/ScreenCrop/blob/master/Readme/ScreenCropAction.gif)
 
@@ -17,8 +17,8 @@ This tool allows you to easily crop and upload screen shots
 
 ### TODO:
 
-* Add visualization to settings menu.
-* Log captured screenshots, save locations and links.
-* Investigate random crashes.
-* Document gui counterpart.
-* Make cropper part load faster.
+- [] Add visualization to settings menu.
+- [] Log captured screenshots, save locations and links.
+- [] Investigate random crashes.
+- [] Document gui counterpart.
+- [] Make cropper part load faster.
