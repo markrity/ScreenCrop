@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using Utilities;
 using System.Diagnostics;
 using System.IO;
@@ -16,7 +15,14 @@ namespace ScreenCrop
         [STAThread]
         public static void Main()
         {
-            Application.Run(new SysTrayApp());
+            try
+            {
+                Application.Run(new SysTrayApp());
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private NotifyIcon trayIcon;
@@ -63,18 +69,27 @@ namespace ScreenCrop
         {
             if (running == false)
             {
-                Process proc = new Process();
-                proc.StartInfo.FileName = @"ScreenCropper\ScreenCropper.exe";
-                proc.StartInfo.UseShellExecute = false;
-                proc.Start();
-                running = true;
-                proc.WaitForExit();
-                foreach (var process in Process.GetProcessesByName("ScreenCropper.exe"))
+                try
                 {
-                    process.Kill();
+                    Process proc = new Process();
+                    proc.StartInfo.FileName = @"ScreenCropper\ScreenCropper.exe";
+                    proc.StartInfo.UseShellExecute = false;
+                    proc.Start();
+                    running = true;
+                    proc.WaitForExit();
+                    foreach (var process in Process.GetProcessesByName("ScreenCropper.exe"))
+                    {
+                        process.Kill();
+                    }
+                    running = false;
+                    this.grabLinks();
                 }
-                running = false;
-                this.grabLinks();
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    MessageBox.Show("Whoops! Looks like ScreenCropper.exe is not found", "Whoops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+
             }
         }
 

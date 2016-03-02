@@ -32,4 +32,4 @@ Download last stable version [here](http://www.megafileupload.com/6cmk/Debug.rar
 - [ ] Log captured screenshots, save locations and links.
 - [ ] Investigate random crashes.
 - [ ] Document gui counterpart.
-- [ ] Make cropper part load faster.
+- [ ] Figure out make cropper part load faster.
