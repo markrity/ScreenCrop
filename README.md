@@ -8,8 +8,8 @@ Download last stable version [here](http://www.megafileupload.com/ap5e/Install.r
 ## Features:
 
 * Take a screenshot.
-* Crop screenshot before saving it.
-* Move cropping sqaue around to capture exactly what you want.
+* Crop the screenshot before saving it (Click and drag Mouse 1).
+* Move cropping sqaue around to capture exactly what you want (Click and drag Mouse 3).
 * Automaticly save screenshot to a chosen location.
 * Automaticly upload screenshot to imgur.com.
 * Place the link of the uploaded image to your clipboard (CRTL+V).
