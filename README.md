@@ -28,7 +28,7 @@ Download last stable version [here](http://www.megafileupload.com/6cmk/Debug.rar
 
 #### TODO:
 
-- [ ] Add visualization to settings menu.
+- [X] Add visualization to settings menu.
 - [ ] Log captured screenshots, save locations and links.
 - [ ] Investigate random crashes.
 - [ ] Document gui counterpart.
