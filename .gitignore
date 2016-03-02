@@ -1,4 +1,3 @@
-*.png
 *.pyc
 upload.py
 setup.py
@@ -11,3 +10,4 @@ dist/settings.json
 dist/ScreenCrop.exe
 *.pyz
 ScreenCrop.spec
+temporary/
