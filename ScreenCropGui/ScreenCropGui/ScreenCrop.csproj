@@ -143,16 +143,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\camicon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="bin\Debug\camera.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\Debug\tiltedcode.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ScreenCropper.exe" />
     <None Include="Resources\tiltedcode.jpg" />
   </ItemGroup>
   <ItemGroup>
