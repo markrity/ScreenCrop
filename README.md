@@ -5,18 +5,20 @@ This tool allows you to easily crop and upload screen shots
 
 ## Features:
 
-* Take screenshots.
-* Crop screenshot.
+* Take a screenshot.
+* Crop screenshot before saving it.
 * Move cropping sqaue around to capture exactly what you want.
 * Automaticly save screenshot to a chosen location.
-* Automaticly upload screenshot to imgur.com and place it's link in your clipboard (CRTL+V).
+* Automaticly upload screenshot to imgur.com.
+* Place the link of the uploaded image to your clipboard (CRTL+V).
 * Customize cropping square to your liking.
 
 ![Image of ScreenCrop settings panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Settings.png)
 
 ### TODO:
 
-* Add visualization to settings menu
-* Investigate random crashes
-* Document gui counterpart
-* Make cropper part load faster
+* Add visualization to settings menu.
+* Log captured screenshots, save locations and links.
+* Investigate random crashes.
+* Document gui counterpart.
+* Make cropper part load faster.
