@@ -1,7 +1,7 @@
 # Screen Crop
 This tool allows you to easily crop screen shots
 
-![Screen Crop action gif]()
+![Screen Crop action gif](https://github.com/InviBear/ScreenCrop/blob/master/Readme/ScreenCropAction.gif)
 
 ## Features:
 
@@ -17,7 +17,7 @@ This tool allows you to easily crop screen shots
 
 * Customize cropping square to your liking.
 
-![Image of ScreenCrop settings panel]()
+![Image of ScreenCrop settings panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Settings.png)
 
 ### TODO:
 
