@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.widthTextbox = new System.Windows.Forms.TextBox();
+            this.thicknessTextbox = new System.Windows.Forms.TextBox();
             this.buttonColor = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -41,13 +41,16 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.widthTextbox);
+            this.groupBox1.Controls.Add(this.pictureBox1);
+            this.groupBox1.Controls.Add(this.thicknessTextbox);
             this.groupBox1.Controls.Add(this.buttonColor);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
@@ -58,20 +61,22 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cropping Square Settings";
             // 
-            // widthTextbox
+            // thicknessTextbox
             // 
-            this.widthTextbox.Location = new System.Drawing.Point(56, 44);
-            this.widthTextbox.Name = "widthTextbox";
-            this.widthTextbox.Size = new System.Drawing.Size(87, 20);
-            this.widthTextbox.TabIndex = 3;
+            this.thicknessTextbox.Location = new System.Drawing.Point(65, 44);
+            this.thicknessTextbox.Name = "thicknessTextbox";
+            this.thicknessTextbox.Size = new System.Drawing.Size(87, 20);
+            this.thicknessTextbox.TabIndex = 3;
+            this.thicknessTextbox.TextChanged += new System.EventHandler(this.widthTextbox_TextChanged);
             // 
             // buttonColor
             // 
             this.buttonColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonColor.Location = new System.Drawing.Point(56, 19);
+            this.buttonColor.Location = new System.Drawing.Point(65, 19);
             this.buttonColor.Name = "buttonColor";
             this.buttonColor.Size = new System.Drawing.Size(18, 18);
             this.buttonColor.TabIndex = 2;
+            this.buttonColor.TabStop = false;
             this.buttonColor.UseVisualStyleBackColor = true;
             this.buttonColor.Click += new System.EventHandler(this.buttonColor_Click);
             // 
@@ -80,18 +85,18 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.Size = new System.Drawing.Size(59, 13);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Width";
+            this.label2.Text = "Thickness:";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 13);
+            this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Color";
+            this.label1.Text = "Color:";
             // 
             // groupBox2
             // 
@@ -123,9 +128,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(6, 23);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 13);
+            this.label3.Size = new System.Drawing.Size(47, 13);
             this.label3.TabIndex = 2;
-            this.label3.Text = "Save to";
+            this.label3.Text = "Save to:";
             // 
             // buttonBrowse
             // 
@@ -139,9 +144,9 @@
             // 
             // saveToTextBox
             // 
-            this.saveToTextBox.Location = new System.Drawing.Point(56, 20);
+            this.saveToTextBox.Location = new System.Drawing.Point(65, 20);
             this.saveToTextBox.Name = "saveToTextBox";
-            this.saveToTextBox.Size = new System.Drawing.Size(181, 20);
+            this.saveToTextBox.Size = new System.Drawing.Size(172, 20);
             this.saveToTextBox.TabIndex = 0;
             // 
             // buttonCancel
@@ -165,6 +170,15 @@
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(162, 19);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(156, 45);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            // 
             // Settings
             // 
             this.AcceptButton = this.buttonSave;
@@ -183,6 +197,7 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -190,7 +205,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox widthTextbox;
+        private System.Windows.Forms.TextBox thicknessTextbox;
         private System.Windows.Forms.Button buttonColor;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
@@ -202,5 +217,6 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.ColorDialog colorDialog;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

@@ -10,3 +10,4 @@ dist/
 ScreenCrop.spec
 temporary/
 ScreenCropGui/ScreenCropGui/bin/
+ScreenCropGui/ScreenCropGui/obj/Debug
