@@ -17,8 +17,8 @@ This tool allows you to easily crop and upload screen shots.
 
 ### TODO:
 
-- [] Add visualization to settings menu.
-- [] Log captured screenshots, save locations and links.
-- [] Investigate random crashes.
-- [] Document gui counterpart.
-- [] Make cropper part load faster.
+[] Add visualization to settings menu.
+[] Log captured screenshots, save locations and links.
+[] Investigate random crashes.
+[] Document gui counterpart.
+[] Make cropper part load faster.
