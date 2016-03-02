@@ -12,3 +12,5 @@ temporary/
 ScreenCropGui/ScreenCropGui/bin/
 ScreenCropGui/ScreenCropGui/obj/
 PyCropper/ScreenCropper.spec
+ScreenCropGui/Install/Debug/
+ScreenCropGui/Install/Release/
