@@ -32,4 +32,4 @@ Download last stable version [here](http://www.megafileupload.com/ap5e/Install.r
 - [ ] Log captured screenshots, save locations and links.
 - [ ] Investigate random crashes.
 - [ ] Document gui counterpart.
-- [ ] Figure out make cropper part load faster.
+- [ ] Figure out how make cropper part load faster.
