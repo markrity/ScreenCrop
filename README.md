@@ -1,5 +1,6 @@
 # Screen Crop
 This tool allows you to easily crop and upload screen shots.
+Download last stable version [here](http://www.megafileupload.com/6cmk/Debug.rar)
 
 ![Screen Crop action gif](https://github.com/InviBear/ScreenCrop/blob/master/Readme/ScreenCropAction.gif)
 
@@ -15,7 +16,16 @@ This tool allows you to easily crop and upload screen shots.
 
 ![Image of ScreenCrop settings panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Settings.png)
 
-### TODO:
+
+#### How to build:
+1. Download project.
+2. Freeze PyCropper\ScreenCropper.pyw (seems like pyinstaller works best in my case).
+3. Make sure that ScreenCropper.exe (the previusly pyw file) and all other content that pyinstaller created is located at the build folder of ScreenCropGui.exe
+4. Make sure that ScreenCropGui calls and runs ScreenCropper.exe from the right path
+(ScreenCropGui\ScreenCrop\Program.cs\SysTrayApp -> void gkh_KeyDown() function)
+5. Build and run ScreenCropGui.
+
+#### TODO:
 
 - [ ] Add visualization to settings menu.
 - [ ] Log captured screenshots, save locations and links.
