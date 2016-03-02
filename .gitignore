@@ -3,11 +3,9 @@ upload.py
 setup.py
 links.json
 *.toc
-build/ScreenCrop/out00-PKG.pkg
+build/
 *.manifest
-build/ScreenCrop/warnScreenCrop.txt
-dist/settings.json
-dist/ScreenCrop.exe
+dist/
 *.pyz
 ScreenCrop.spec
 temporary/
