@@ -125,3 +125,6 @@ ScreenCropGui/ScreenCropGui/obj/
 PyCropper/ScreenCropper.spec
 *.pdb
 ScreenCropGui/ScreenCropGui/obj/Debug/ScreenCrop.exe
+ScreenCropGui/ScreenCropGui/obj/Debug/ScreenCrop.application
+*.exe
+ScreenCropGui/ScreenCropGui/obj/Debug/ScreenCrop.pdb
