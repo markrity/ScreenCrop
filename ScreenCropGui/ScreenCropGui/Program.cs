@@ -141,13 +141,17 @@ namespace ScreenCrop
 
         private void saveScreenShotLogs()
         {
+            // If there are any logs 
             if (capturedInfo.Count > 0)
             {
                 FileInfo file = new FileInfo(@"Logs\\Captured.json");
+
+                // Create directory if doesn't exists
                 file.Directory.Create();
+
+                // Serialize the list to a json string
                 string json = JsonConvert.SerializeObject(capturedInfo, Formatting.Indented);
                 File.WriteAllText(file.FullName, json);
-
             }
         }
 
