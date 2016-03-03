@@ -139,6 +139,18 @@ namespace ScreenCrop
             capturedInfo.Add(imageInfo);
         }
 
+        private void saveScreenShotLogs()
+        {
+            if (capturedInfo.Count > 0)
+            {
+                FileInfo file = new FileInfo(@"Logs\\Captured.json");
+                file.Directory.Create();
+                string json = JsonConvert.SerializeObject(capturedInfo, Formatting.Indented);
+                File.WriteAllText(file.FullName, json);
+
+            }
+        }
+
         void gkh_KeyDown(object sender, KeyEventArgs e)
         {
             // Capture printscreen key press using the global keyboard hook event.
@@ -245,6 +257,7 @@ namespace ScreenCrop
 
         private void OnExit(object sender, EventArgs e)
         {
+            saveScreenShotLogs();
             Application.Exit();
         }
 
@@ -265,9 +278,10 @@ namespace ScreenCrop
             // 
             // SysTrayApp
             // 
-            this.ClientSize = new Size(120, 0);
-            this.Name = "ScreenCrop";
+            this.ClientSize = new System.Drawing.Size(120, 0);
+            this.Name = "SysTrayApp";
             this.ResumeLayout(false);
+
         }
     }
 
