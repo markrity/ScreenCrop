@@ -1,15 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using ScreenCrop;
 
 namespace ScreenCropGui
 {
@@ -17,21 +12,22 @@ namespace ScreenCropGui
     {
         private settingsClass cropSettings = null;
 
-        public Settings()
+        public Settings(settingsClass settings)
         {
             InitializeComponent();
             if (File.Exists(@"settings.json"))
             {
-                JObject settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
-                cropSettings = new settingsClass
-                {
-                    save_location = settingsJSON["save_location"].ToString(),
-                    continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
-                    imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
-                    rec_color = settingsJSON["rec_color"].ToString(),
-                    rec_width = Convert.ToDecimal(settingsJSON["rec_width"]),
-                    image_format = settingsJSON["image_format"].ToString()
-                };
+                //JObject settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
+                //cropSettings = new settingsClass
+                //{
+                //    save_location = settingsJSON["save_location"].ToString(),
+                //    continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
+                //    imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
+                //    rec_color = settingsJSON["rec_color"].ToString(),
+                //    rec_width = Convert.ToDecimal(settingsJSON["rec_width"]),
+                //    image_format = settingsJSON["image_format"].ToString()
+                //};
+                cropSettings = settings;
 
                 Color color = ColorTranslator.FromHtml(cropSettings.rec_color);
                 buttonColor.BackColor = color;
@@ -89,23 +85,12 @@ namespace ScreenCropGui
 
             string json = JsonConvert.SerializeObject(this.cropSettings, Formatting.Indented);
             File.WriteAllText("settings.json", json);
-            settingsClass deserializedProduct = JsonConvert.DeserializeObject<settingsClass>(json);
             this.Close();
         }
 
         private static String HexConverter(System.Drawing.Color c)
         {
             return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
-        }
-
-        internal class settingsClass
-        {
-            public string save_location { get; set; }
-            public bool continuous_mode { get; set; }
-            public bool imgur_upload { get; set; }
-            public string rec_color { get; set; }
-            public decimal rec_width { get; set; }
-            public string image_format { get; set; }
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
