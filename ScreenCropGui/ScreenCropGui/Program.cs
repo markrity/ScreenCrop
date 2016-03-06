@@ -40,11 +40,13 @@ namespace ScreenCrop
 
             // Create tray menu.
             trayMenu = new ContextMenuStrip();
-            ToolStripMenuItem item = new ToolStripMenuItem("Settings", null, OnSettings);
-            //trayMenu.MenuItems.Add("Settings", OnSettings);
-            //trayMenu.MenuItems.Add("Help", OnHelp);
-            //trayMenu.MenuItems.Add("About", OnAbout);
-            //trayMenu.MenuItems.Add("Exit", OnExit);
+            // ToolStripMenuItem item = new ToolStripMenuItem("Settings", null, OnSettings);
+            trayMenu.Items.Add("Recents", null, null);
+            trayMenu.Items.Add("Settings", null, OnSettings);
+            trayMenu.Items.Add("Help", null, OnHelp);
+            trayMenu.Items.Add("About", null, OnAbout);
+            trayMenu.Items.Add("-");
+            trayMenu.Items.Add("Exit", null, OnExit);
 
             // Create tray icon.
             trayIcon = new NotifyIcon();
@@ -58,12 +60,31 @@ namespace ScreenCrop
 
             // Load settings and screenshot info logs
             loadSettings();
-            //loadScreenshotLogs();
+            //loadRecents();
+            loadScreenshotLogs();
         }
 
         private void TrayIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            trayMenu.Show();
+            //trayMenu.Show(this, e.X, e.Y);//places the menu at the pointer position
+        }
+
+        void loadRecents()
+        {
+            if (File.Exists(@"Logs\Captured.json"))
+            {
+                JObject capturedJSON = JObject.Parse(File.ReadAllText("Captured.json"));
+
+                screenshotInfo recents = new screenshotInfo
+                {
+                    Name = capturedJSON["Name"].ToString(),
+                    Title = capturedJSON["Title"].ToString(),
+                    Save_Location = capturedJSON["Save_Location"].ToString(),
+                    Url = capturedJSON["Url"].ToString()
+                };
+
+            }
+                (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add("123");
         }
 
         void loadSettings()
@@ -107,6 +128,12 @@ namespace ScreenCrop
             // Otherwise, do nothing.
             // SIDE NOTE: i dont know if that's the right thing to do. i havn't decided yet if i'm
             // going to create the file right now or just check if the info list has any content in it later.
+
+            string name = string.Empty;
+            string title = string.Empty;
+            string save_location = string.Empty;
+            string url = string.Empty;
+
             if (File.Exists(@"Logs\Captured.json"))
             {
                 var json = File.ReadAllText(@"Logs\Captured.json");
@@ -116,17 +143,35 @@ namespace ScreenCrop
                 {
                     foreach (KeyValuePair<string, JToken> screenshot in capturedinfo)
                     {
-
-                        screenshotInfo info = new screenshotInfo
+                        if (screenshot.Key.Equals("Name"))
                         {
-                            Name = screenshot.Value["Name"].ToString(),
-                            Title = screenshot.Value["Title"].ToString(),
-                            Save_Location = screenshot.Value["Save_Locvation"].ToString(),
-                            Url = screenshot.Value["Url"].ToString()
-                        };
+                            name = screenshot.Value.ToString();
+                        }
+                        if (screenshot.Equals("Title"))
+                        {
+                            title = screenshot.Value.ToString();
+                        }
+                        if (screenshot.Key.Equals("Save_Location"))
+                        {
+                            save_location = screenshot.Value.ToString();
+                        }
+                        if (screenshot.Key.Equals("Url"))
+                        {
+                            url = screenshot.Value.ToString();
+                        }
 
-                        capturedInfo.Add(info);
                     }
+
+                    screenshotInfo info = new screenshotInfo
+                    {
+                        Name = name,
+                        Title = title,
+                        Save_Location = save_location,
+                        Url = url
+                    };
+
+                    capturedInfo.Add(info);
+                    (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add(info.Name);
 
                 }
 
@@ -202,7 +247,7 @@ namespace ScreenCrop
                     lastName = string.Empty;
                     
                 }
-                catch (System.ComponentModel.Win32Exception)
+                catch (System.ComponentModel.Win32Exception )
                 {
                     MessageBox.Show("Whoops! Looks like ScreenCropper.exe is not found", "Whoops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -292,6 +337,7 @@ namespace ScreenCrop
             // 
             this.ClientSize = new System.Drawing.Size(120, 0);
             this.Name = "SysTrayApp";
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseClick);
             this.ResumeLayout(false);
 
         }
