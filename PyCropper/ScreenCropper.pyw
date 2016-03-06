@@ -4,6 +4,8 @@ import sys
 import os
 # Module settings
 import json
+# String validation
+import re
 # GUI
 try:
     from tkinter import *
@@ -27,6 +29,8 @@ if (major, minor) < (2, 7):
 __author__ = "Michael Livs"
 __version__ = "1.0"
 __email__ = "livsMichael@gmail.com"
+
+DEBUG = TRUE
 
 
 class ScreenCrop(Frame):
@@ -230,8 +234,11 @@ if __name__ == '__main__':
     try:
         with open(settingsJson, 'r+') as file:
             settings = json.load(file)
-    except IOError:
+            print(settings)
+    except (IOError, ValueError) as e:
         # Give default alternative if settings file is not found
+        if DEBUG:
+            print(str(e))
         settings = dict()
         settings['save_location'] = defualtPath
         settings['continuous_mode'] = False
@@ -240,16 +247,80 @@ if __name__ == '__main__':
         settings['rec_width'] = 1.4
         settings['image_format'] = '.png'
 
+    if DEBUG:
+        print(settings)
+
     if (settings['save_location'] is None):
+        if DEBUG:
+            print(settings['save_location'])
         settings['save_location'] = defualtPath
 
-    # If doesn't exist, create temporary directory
+    # If doesn't exist, create temporary directory.
     if not os.path.exists(tempPath):
+        if DEBUG:
+            print(tempPath + " doesn't exist, creatings directoy")
         os.makedirs(tempPath)
 
-    # If doesn't exist, create screens shots save directory
+    # If the path is valid, absolute path adress.
+    if (not os.path.isabs(settings['save_location'])):
+        if DEBUG:
+            print(settings['save_location'] +
+                  " is not a valid absolute path, using defualt value")
+        settings['save_location'] = defualtPath
+
+    # If save location doesn't exist, create it.
     if not os.path.exists(settings['save_location']):
+        if DEBUG:
+            print(settings['save_location'] +
+                  " doesn't exist, creating directory")
         os.makedirs(settings['save_location'])
+
+    # Make sure that user input is valid.
+    if (not isinstance(settings['rec_width'], int) and
+            not isinstance(settings['rec_width'], float)):
+        if DEBUG:
+            print("rec_width is " +
+                  str(type(settings['rec_width'])) +
+                  ", using defualt value (1.4)")
+        settings['rec_width'] = 1.4
+
+    if (not isinstance(settings['continuous_mode'], bool)):
+        if DEBUG:
+            print("continuous_mode is " +
+                  InstanceType(settings['continuous_mode']) +
+                  ", using defualt value (False)")
+        settings['continuous_mode'] = False
+
+    if (not isinstance(settings['imgur_upload'], bool)):
+        if DEBUG:
+            print("imgur_upload is " +
+                  InstanceType(settings['imgur_upload']) +
+                  ", using defualt value (True)")
+        settings['imgur_upload'] = True
+
+    # Regular expresion to check if HEX is valid
+    match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', settings['rec_color'])
+    if not match:
+        if DEBUG:
+            print("rec_color is not a valid HEX type, " +
+                  "using defualt value (#ff3535)")
+        settings['rec_color'] = "#ff3535"
+
+    # Make sure that the image format is a valid one
+    validImageFormats = ['BMP', 'GIF', 'JPEG', 'JPG', 'PNG']
+    for imFormat in validImageFormats:
+        if (imFormat.upper() == str(settings['image_format'])[1:].upper()):
+            valid = True
+            break
+        else:
+            valid = False
+
+    if (not valid):
+        if DEBUG:
+            print(" image_format has an unsoported value: " +
+                  settings['image_format'] +
+                  ", using defualt value (png)")
+        settings['image_format'] = '.png'
 
     # Take screen shot and save it in the temporary directory
     screen = ImageGrab.grab()

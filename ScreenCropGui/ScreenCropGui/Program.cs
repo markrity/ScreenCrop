@@ -14,7 +14,7 @@ namespace ScreenCrop
     public class SysTrayApp : Form
     {
         private NotifyIcon trayIcon;
-        private ContextMenu trayMenu;
+        private ContextMenuStrip trayMenu;
         private globalKeyboardHook gkh = new globalKeyboardHook();
         private settingsClass cropperSettings = new settingsClass();
         private List<screenshotInfo> capturedInfo = new List<screenshotInfo>();
@@ -37,27 +37,35 @@ namespace ScreenCrop
 
         public SysTrayApp()
         {
+
             // Create tray menu.
-            trayMenu = new ContextMenu();
-            trayMenu.MenuItems.Add("Settings", OnSettings);
-            trayMenu.MenuItems.Add("Help", OnHelp);
-            trayMenu.MenuItems.Add("About", OnAbout);
-            trayMenu.MenuItems.Add("Exit", OnExit);
+            trayMenu = new ContextMenuStrip();
+            ToolStripMenuItem item = new ToolStripMenuItem("Settings", null, OnSettings);
+            //trayMenu.MenuItems.Add("Settings", OnSettings);
+            //trayMenu.MenuItems.Add("Help", OnHelp);
+            //trayMenu.MenuItems.Add("About", OnAbout);
+            //trayMenu.MenuItems.Add("Exit", OnExit);
 
             // Create tray icon.
             trayIcon = new NotifyIcon();
             trayIcon.Text = "Screen Crop";
             trayIcon.Icon = new Icon(ScreenCropGui.Properties.Resources.AppCameraIco, 40, 40);
+            trayIcon.MouseClick += TrayIcon_MouseClick;
 
             // Add menu to tray icon and show it.
-            trayIcon.ContextMenu = trayMenu;
+            trayIcon.ContextMenuStrip = trayMenu;
             trayIcon.Visible = true;
 
             // Load settings and screenshot info logs
             loadSettings();
-            loadScreenshotLogs();
+            //loadScreenshotLogs();
         }
-        
+
+        private void TrayIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            trayMenu.Show();
+        }
+
         void loadSettings()
         {
             // Check if settings file exists. if that's the case, initialize cropperSettings variable.
@@ -106,7 +114,7 @@ namespace ScreenCrop
 
                 foreach (JObject capturedinfo in objects)
                 {
-                    foreach (KeyValuePair<String, JToken> screenshot in capturedinfo)
+                    foreach (KeyValuePair<string, JToken> screenshot in capturedinfo)
                     {
 
                         screenshotInfo info = new screenshotInfo
