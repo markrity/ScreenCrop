@@ -260,7 +260,7 @@ if __name__ == '__main__':
             not os.path.isabs(settings['save_location'])):
         if DEBUG:
             print("save_location is not a valid absolute path, " +
-                  " using defualt value " +
+                  "using defualt path: " +
                   defualtPath)
         settings['save_location'] = defualtPath
 
