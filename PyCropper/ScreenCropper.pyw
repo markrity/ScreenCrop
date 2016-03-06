@@ -234,7 +234,6 @@ if __name__ == '__main__':
     try:
         with open(settingsJson, 'r+') as file:
             settings = json.load(file)
-            print(settings)
     except (IOError, ValueError) as e:
         # Give default alternative if settings file is not found
         if DEBUG:
@@ -250,29 +249,25 @@ if __name__ == '__main__':
     if DEBUG:
         print(settings)
 
-    if (settings['save_location'] is None):
-        if DEBUG:
-            print(settings['save_location'])
-        settings['save_location'] = defualtPath
-
     # If doesn't exist, create temporary directory.
     if not os.path.exists(tempPath):
         if DEBUG:
             print(tempPath + " doesn't exist, creatings directoy")
         os.makedirs(tempPath)
 
-    # If the path is valid, absolute path adress.
-    if (not os.path.isabs(settings['save_location'])):
+    # Check If the path is a valid absolute path adress.
+    if (settings['save_location'] is None or
+            not os.path.isabs(settings['save_location'])):
         if DEBUG:
-            print(settings['save_location'] +
-                  " is not a valid absolute path, using defualt value")
+            print("save_location is not a valid absolute path, " +
+                  " using defualt value " +
+                  defualtPath)
         settings['save_location'] = defualtPath
 
     # If save location doesn't exist, create it.
     if not os.path.exists(settings['save_location']):
         if DEBUG:
-            print(settings['save_location'] +
-                  " doesn't exist, creating directory")
+            print("save_location doesn't exist, creating directory")
         os.makedirs(settings['save_location'])
 
     # Make sure that user input is valid.
