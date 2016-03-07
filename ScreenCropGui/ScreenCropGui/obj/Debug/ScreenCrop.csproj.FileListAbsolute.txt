@@ -16,3 +16,4 @@ C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\Screen
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.application
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.exe
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.pdb
+C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.EditTitleForm.resources

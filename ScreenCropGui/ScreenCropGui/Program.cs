@@ -1,30 +1,38 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using Utilities;
-using System.Diagnostics;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScreenCropGui;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Threading;
+using System.Timers;
+using System.Windows.Forms;
+using Utilities;
 
 namespace ScreenCrop
 {
     public class SysTrayApp : Form
     {
         private NotifyIcon trayIcon;
-        private ContextMenuStrip trayMenu;
+        private static ContextMenuStrip trayMenu;
         private globalKeyboardHook gkh = new globalKeyboardHook();
         private settingsClass cropperSettings = new settingsClass();
-        private List<screenshotInfo> capturedInfo = new List<screenshotInfo>();
+        private static List<screenshotInfo> capturedInfo = new List<screenshotInfo>();
+        private static Dictionary<int,screenshotInfo> infoDict = new Dictionary<int, screenshotInfo>();
+        private static int currentDropDownIndex = 0;
+        private static System.Timers.Timer ClickTimer;
+        private static int ClickCounter = 0;
         private string lastLink = string.Empty;
         private string lastName = string.Empty;
+        private CheckBox checkBox1;
         private bool running = false;
 
         [STAThread]
         public static void Main()
         {
+            // Main entry point to the program
             try
             {
                 Application.Run(new SysTrayApp());
@@ -37,10 +45,12 @@ namespace ScreenCrop
 
         public SysTrayApp()
         {
+            // Initiate click counter
+            ClickTimer = new System.Timers.Timer(300);
+            ClickTimer.Elapsed += new ElapsedEventHandler(Evaluate_Clicks);
 
             // Create tray menu.
             trayMenu = new ContextMenuStrip();
-            // ToolStripMenuItem item = new ToolStripMenuItem("Settings", null, OnSettings);
             trayMenu.Items.Add("Recents", null, null);
             trayMenu.Items.Add("Settings", null, OnSettings);
             trayMenu.Items.Add("Help", null, OnHelp);
@@ -52,42 +62,165 @@ namespace ScreenCrop
             trayIcon = new NotifyIcon();
             trayIcon.Text = "Screen Crop";
             trayIcon.Icon = new Icon(ScreenCropGui.Properties.Resources.AppCameraIco, 40, 40);
-            trayIcon.MouseClick += TrayIcon_MouseClick;
 
             // Add menu to tray icon and show it.
             trayIcon.ContextMenuStrip = trayMenu;
             trayIcon.Visible = true;
 
             // Load settings and screenshot info logs
-            loadSettings();
-            //loadRecents();
-            loadScreenshotLogs();
+            Load_Settings();
+            Load_Screenshot_Logs();
+
+            // Load recents submenu
+            fillRecents();
         }
 
-        private void TrayIcon_MouseClick(object sender, MouseEventArgs e)
+        private void copyToClipBoard(string text)
         {
-            //trayMenu.Show(this, e.X, e.Y);//places the menu at the pointer position
+            // Clear clipboard and copy text into it
+            Clipboard.Clear();
+            Clipboard.SetText(text);
         }
 
-        void loadRecents()
+        private static void copyCurrentToClipBoard()
         {
-            if (File.Exists(@"Logs\Captured.json"))
+            // thread safe clipboard copy and clear
+            Clipboard.Clear();
+            Clipboard.SetText(infoDict[currentDropDownIndex].Url.ToString());
+        }
+
+        private static void clearRecentsSubmenu()
+        {
+            (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Clear();
+        }
+
+        private static void addMenuItemToRecents(ToolStripItem subItem)
+        {
+            (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add(subItem);
+        }
+
+        private static void fillRecents()
+        {
+            // fillRecents method will fill the recents submenu
+            int i = 0;
+
+            // This condition is here in the case that we need to refresh 
+            if ((trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Count > 0)
             {
-                JObject capturedJSON = JObject.Parse(File.ReadAllText("Captured.json"));
+                Thread clearRecentsThread = new Thread(new ThreadStart(clearRecentsSubmenu));
+                clearRecentsThread.SetApartmentState(ApartmentState.STA);
+                clearRecentsThread.Start();
 
-                screenshotInfo recents = new screenshotInfo
+                infoDict.Clear();
+            }
+
+            // Go over every screenshot we took, and add it a dictionary and a into the recents submenu
+            foreach (var info in capturedInfo)
+            {
+                // Register events
+                ToolStripItem subItem = new ToolStripMenuItem();
+                subItem.MouseDown += SubItem_MouseDown;
+                subItem.MouseEnter += SubItem_MouseEnter;
+                subItem.MouseLeave += SubItem_MouseLeave;
+
+                // Use title if available
+                if (info.Title == string.Empty)
                 {
-                    Name = capturedJSON["Name"].ToString(),
-                    Title = capturedJSON["Title"].ToString(),
-                    Save_Location = capturedJSON["Save_Location"].ToString(),
-                    Url = capturedJSON["Url"].ToString()
-                };
+                    subItem.Text = info.Name;
+                }
+                else
+                {
+                    subItem.Text = info.Title;
+                }
+                
+                // Add item to dropdown menu
+                Thread addMenuItemThread = new Thread(() => addMenuItemToRecents(subItem));
+                addMenuItemThread.SetApartmentState(ApartmentState.STA);
+                addMenuItemThread.Start();
+
+                //(trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add(subItem);
+
+                // Set tooltip text for each item
+                String toolTipText = "Name: " + info.Name + Environment.NewLine +
+                                     "Location: " + info.Save_Location + Environment.NewLine +
+                                     "URL: " + info.Url;
+                
+                // Add item to dictionary and set the tag and the tool tip text
+                infoDict.Add(i, info);
+                (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems[i].Tag = i;
+                (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems[i++].ToolTipText = toolTipText;
+            }
+        }
+
+        private static void SubItem_MouseEnter(object sender, EventArgs e)
+        {
+            // Recents submenu mouse enter event
+            // this event function will stop the dropdownmenu from closing while the mouse is on the menu
+            //  and it will update the currentDropDownIndex
+            (trayMenu.Items[0] as ToolStripMenuItem).DropDown.AutoClose = false;
+            currentDropDownIndex = (int)(sender as ToolStripMenuItem).Tag;
+        }
+
+        private static void SubItem_MouseLeave(object sender, EventArgs e)
+        {
+            // Mouse leave event function
+            // allow the recents submenu to close
+            (trayMenu.Items[0] as ToolStripMenuItem).DropDown.AutoClose = true;
+        }
+
+        private static void SubItem_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Mouse click event funciton
+            // Counts the amount of clicks on a submenu item
+            ClickTimer.Stop();
+            ClickCounter++;
+            ClickTimer.Start();
+        }
+
+        private void Evaluate_Clicks(object sender, ElapsedEventArgs e)
+        {
+            // This function evaluates the amount of clicks on a submenu item and 
+            // takes action 
+
+            ClickTimer.Stop();
+            switch (ClickCounter)
+            {
+                case 1:
+                    using (EditTitleForm editForm = new EditTitleForm())
+                    {
+                        DialogResult dr = editForm.ShowDialog();
+                        if (dr == DialogResult.OK)
+                        {
+                            if (editForm.Title != string.Empty)
+                            {
+                                infoDict[currentDropDownIndex].Title = editForm.Title;
+                                fillRecents();
+                            }
+                            
+
+                        }
+
+                    }
+                    break;
+                case 2:
+                    try
+                    {
+                        Thread newThread = new Thread(new ThreadStart(copyCurrentToClipBoard));
+                        newThread.SetApartmentState(ApartmentState.STA);
+                        newThread.Start();
+                        Show_Balloontip(infoDict[currentDropDownIndex].Url.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    break;
 
             }
-                (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add("123");
+            ClickCounter = 0;
         }
 
-        void loadSettings()
+        private void Load_Settings()
         {
             // Check if settings file exists. if that's the case, initialize cropperSettings variable.
             // Otherwise, initialize cropperSettings using defualt parameters
@@ -122,7 +255,7 @@ namespace ScreenCrop
             }
         }
 
-        void loadScreenshotLogs()
+        private void Load_Screenshot_Logs()
         {
             // Check if captured screenshots log file exists. if so, read it and deserialize it.
             // Otherwise, do nothing.
@@ -141,6 +274,7 @@ namespace ScreenCrop
 
                 foreach (JObject capturedinfo in objects)
                 {
+                    // Extract data from json
                     foreach (KeyValuePair<string, JToken> screenshot in capturedinfo)
                     {
                         if (screenshot.Key.Equals("Name"))
@@ -162,6 +296,7 @@ namespace ScreenCrop
 
                     }
 
+                    // Construct info container
                     screenshotInfo info = new screenshotInfo
                     {
                         Name = name,
@@ -170,16 +305,15 @@ namespace ScreenCrop
                         Url = url
                     };
 
+                    // Add colected data to info collection
                     capturedInfo.Add(info);
-                    (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add(info.Name);
-
                 }
 
                 //List<screenshotInfo> deserializedProduct = JsonConvert.DeserializeObject<settingsClass>(json);
             }
         }
 
-        private void logScreenShotInfo(string name, string save_location, string url)
+        private void Log_ScreenShot_Info(string name, string save_location, string url)
         {
             screenshotInfo imageInfo = new screenshotInfo
             {
@@ -192,7 +326,7 @@ namespace ScreenCrop
             capturedInfo.Add(imageInfo);
         }
 
-        private void saveScreenShotLogs()
+        private void Save_ScreenShot_Logs()
         {
             // If there are any logs 
             if (capturedInfo.Count > 0)
@@ -208,7 +342,7 @@ namespace ScreenCrop
             }
         }
 
-        void gkh_KeyDown(object sender, KeyEventArgs e)
+        void GlobalHook_KeyDown(object sender, KeyEventArgs e)
         {
             // Capture printscreen key press using the global keyboard hook event.
             // Make sure the process is not running already.
@@ -239,12 +373,14 @@ namespace ScreenCrop
                     running = false;
                     
                     // Grab the produced link.
-                    grabLink();
+                    Grab_Link();
 
                     // Log the file.
-                    logScreenShotInfo(lastName, cropperSettings.save_location, lastLink);
+                    Log_ScreenShot_Info(lastName, cropperSettings.save_location, lastLink);
                     lastLink = string.Empty;
                     lastName = string.Empty;
+
+                    fillRecents();
                     
                 }
                 catch (System.ComponentModel.Win32Exception )
@@ -256,7 +392,7 @@ namespace ScreenCrop
             }
         }
 
-        void grabLink()
+        void Grab_Link()
         {
             // Check that the link json file exists, the Cropper module creates that file after uploading 
             // the taken screenshot to imgur.com.
@@ -269,24 +405,24 @@ namespace ScreenCrop
                 JObject link = JObject.Parse(File.ReadAllText("links.json"));
                 lastLink = link["link"].ToString();
                 lastName = link["name"].ToString();
-                Clipboard.SetText(lastLink);
-                balloomTip(lastName);
+                copyToClipBoard(lastLink);
+                Show_Balloontip(lastName);
                 File.Delete(@"links.json");
             }
 
             Directory.Delete(AppDomain.CurrentDomain.BaseDirectory.ToString() + "temporary", true);
         }
 
-        private void balloomTip(string text)
+        private void Show_Balloontip(string text)
         {
             this.trayIcon.BalloonTipText = text + " Added to clipboard";
-            this.trayIcon.ShowBalloonTip(15000);
+            this.trayIcon.ShowBalloonTip(2500);
         }
 
         protected override void OnLoad(EventArgs e)
         {
             gkh.HookedKeys.Add(Keys.PrintScreen);
-            gkh.KeyDown += new KeyEventHandler(gkh_KeyDown);
+            gkh.KeyDown += new KeyEventHandler(GlobalHook_KeyDown);
 
             Visible = false;       // Hide form window.
             ShowInTaskbar = false; // Remove from taskbar.
@@ -314,7 +450,7 @@ namespace ScreenCrop
 
         private void OnExit(object sender, EventArgs e)
         {
-            saveScreenShotLogs();
+            Save_ScreenShot_Logs();
             Application.Exit();
         }
 
@@ -322,6 +458,7 @@ namespace ScreenCrop
         {
             if (isDisposing)
             {
+                
                 // Release the icon resource.
                 trayIcon.Dispose();
             }
@@ -331,14 +468,26 @@ namespace ScreenCrop
 
         private void InitializeComponent()
         {
+            this.checkBox1 = new CheckBox();
             this.SuspendLayout();
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(6, 0);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
+            this.checkBox1.TabIndex = 0;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // SysTrayApp
             // 
             this.ClientSize = new System.Drawing.Size(120, 0);
+            this.Controls.Add(this.checkBox1);
             this.Name = "SysTrayApp";
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseClick);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
     }
