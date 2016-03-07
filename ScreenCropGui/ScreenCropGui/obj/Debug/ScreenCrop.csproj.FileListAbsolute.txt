@@ -7,7 +7,6 @@ C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\bin\Debug\Newton
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.csprojResolveAssemblyReference.cache
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.AboutBox.resources
-C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.Help.resources
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.Settings.resources
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.SysTrayApp.resources
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.Properties.Resources.resources
@@ -16,4 +15,4 @@ C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\Screen
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.application
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.exe
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.pdb
-C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.EditTitleForm.resources
+C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.HelpForm.resources
