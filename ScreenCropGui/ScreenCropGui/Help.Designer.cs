@@ -1,6 +1,6 @@
 ﻿namespace ScreenCropGui
 {
-    partial class HelpForm
+    partial class Help
     {
         /// <summary>
         /// Required designer variable.

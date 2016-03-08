@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace ScreenCropGui
 {
-    public partial class HelpForm : Form
+    public partial class Help : Form
     {
-        public HelpForm()
+        public Help()
         {
             InitializeComponent();
             textBox.GetPreferredSize(Size.Empty);

@@ -1,20 +1,17 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ScreenCropGui;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Utilities;
 
-namespace ScreenCrop
+namespace ScreenCropGui
 {
     public class SysTrayApp : Form
     {
-        private NotifyIcon trayIcon;
-        private DataHandler data = new DataHandler();
+        public static NotifyIcon trayIcon;
+        private DataHandler data = DataHandler.Instance;
         private ContextMenuStrip trayMenu;
         private globalKeyboardHook gkh = new globalKeyboardHook();
         private bool running = false;
@@ -41,7 +38,7 @@ namespace ScreenCrop
 
             // Create tray menu.
             trayMenu = new ContextMenuStrip();
-            trayMenu.Items.Add("Recents", null, null);
+            trayMenu.Items.Add("Recents", null, onRecents);
             trayMenu.Items.Add("Settings", null, OnSettings);
             trayMenu.Items.Add("Help", null, OnHelp);
             trayMenu.Items.Add("About", null, OnAbout);
@@ -58,8 +55,8 @@ namespace ScreenCrop
             trayIcon.Visible = true;
 
             // Load settings and screenshot info logs
-            data.Load_Settings();
-            data.Load_Screenshot_Logs();
+            //data.Load_Settings();
+            //data.Load_Screenshot_Logs();
         }
 
         private void copyToClipBoard(string text)
@@ -102,7 +99,7 @@ namespace ScreenCrop
         //        {
         //            subItem.Text = info.Title;
         //        }
-                
+
         //        // Add item to dropdown menu
         //        Thread addMenuItemThread = new Thread(() => addMenuItemToRecents(subItem));
         //        addMenuItemThread.SetApartmentState(ApartmentState.STA);
@@ -114,7 +111,7 @@ namespace ScreenCrop
         //        String toolTipText = "Name: " + info.Name + Environment.NewLine +
         //                             "Location: " + info.Save_Location + Environment.NewLine +
         //                             "URL: " + info.Url;
-                
+
         //        // Add item to dictionary and set the tag and the tool tip text
         //        infoDict.Add(i, info);
         //        (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems[i].Tag = i;
@@ -138,7 +135,7 @@ namespace ScreenCrop
         //            rec_width = Convert.ToDecimal(settingsJSON["rec_width"]),
         //            image_format = settingsJSON["image_format"].ToString()
         //        };
-                
+
         //    }
         //    else
         //    {
@@ -273,7 +270,7 @@ namespace ScreenCrop
                         process.Kill();
                     }
                     running = false;
-                    
+
                     // Grab the produced link.
                     Grab_Link();
 
@@ -281,11 +278,11 @@ namespace ScreenCrop
                     data.Log_ScreenShot_Info(data.LastName, data.CropperSettings.save_location, data.LastLink);
                     data.LastLink = string.Empty;
                     data.LastName = string.Empty;
-                    
+
                 }
-                catch (System.ComponentModel.Win32Exception )
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Whoops! Looks like ScreenCropper.exe is not found", "Whoops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(ex.Message, "Whoops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
 
@@ -313,10 +310,16 @@ namespace ScreenCrop
             Directory.Delete(AppDomain.CurrentDomain.BaseDirectory.ToString() + "temporary", true);
         }
 
-        private void Show_Balloontip(string text)
+        public void Show_Balloontip(string text)
         {
-            this.trayIcon.BalloonTipText = text + " Added to clipboard";
-            this.trayIcon.ShowBalloonTip(2500);
+            trayIcon.BalloonTipText = text + " Added to clipboard";
+            trayIcon.ShowBalloonTip(1500);
+        }
+
+        protected void onRecents(object sender, EventArgs e)
+        {
+            RecentsForm recents = new RecentsForm();
+            recents.Show();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -336,7 +339,7 @@ namespace ScreenCrop
 
         protected void OnHelp(object sender, EventArgs e)
         {
-            ScreenCropGui.HelpForm help = new ScreenCropGui.HelpForm();
+            ScreenCropGui.Help help = new ScreenCropGui.Help();
             help.Show();
         }
 
@@ -356,7 +359,7 @@ namespace ScreenCrop
         {
             if (isDisposing)
             {
-                
+
                 // Release the icon resource.
                 trayIcon.Dispose();
             }

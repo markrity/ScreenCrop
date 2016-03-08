@@ -8,11 +8,25 @@ namespace ScreenCropGui
 {
     public class DataHandler
     {
-        private settingsClass cropperSettings;
+        private static DataHandler _instance;
+
+        private static settingsClass cropperSettings;
         private static List<screenshotInfo> capturedInfo;
         private static Dictionary<int, screenshotInfo> infoDict;
-        private string lastLink;
+        private static string lastLink;
         private string lastName;
+
+        public static DataHandler Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new DataHandler();
+                }
+                return _instance;
+            }
+        }
 
         public DataHandler()
         {
@@ -21,6 +35,9 @@ namespace ScreenCropGui
             infoDict = new Dictionary<int, screenshotInfo>();
             lastLink = string.Empty;
             lastName = string.Empty;
+
+            Load_Settings();
+            Load_Screenshot_Logs();
         }
 
         public settingsClass CropperSettings
@@ -36,7 +53,7 @@ namespace ScreenCropGui
             }
         }
 
-        public static List<screenshotInfo> CapturedInfo
+        public List<screenshotInfo> CapturedInfo
         {
             get
             {
@@ -49,7 +66,7 @@ namespace ScreenCropGui
             }
         }
 
-        public static Dictionary<int, screenshotInfo> InfoDict
+        public  Dictionary<int, screenshotInfo> InfoDict
         {
             get
             {
@@ -138,7 +155,17 @@ namespace ScreenCropGui
             if (File.Exists(@"Logs\Captured.json"))
             {
                 var json = File.ReadAllText(@"Logs\Captured.json");
-                var objects = JArray.Parse(json);
+                JArray objects = new JArray();
+
+                try
+                {
+                    objects = JArray.Parse(json);
+                }
+                catch (JsonReaderException)
+                {
+
+                }
+                
 
                 foreach (JObject capturedinfo in objects)
                 {
