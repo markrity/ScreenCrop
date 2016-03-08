@@ -13,6 +13,8 @@ namespace ScreenCropGui
         public Settings(settingsClass settings)
         {
             InitializeComponent();
+            this.ShowInTaskbar = false;
+            this.ShowIcon = true;
             if (File.Exists(@"settings.json"))
             {
                 //JObject settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
