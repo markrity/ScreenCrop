@@ -19,7 +19,6 @@ namespace ScreenCropGui
             InitializeComponent();
             init_Buttons();
             reSize();
-
         }
 
         private void init_Buttons()
@@ -27,8 +26,7 @@ namespace ScreenCropGui
             int buttonAmount = data.CapturedInfo.Count;
             int y = 0;
             int x = 0;
-            int cellNum = 0;
-            
+            int cellNum = 0;            
 
             while (buttonAmount >= xDim )
             {
