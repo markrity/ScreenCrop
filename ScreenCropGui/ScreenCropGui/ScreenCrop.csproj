@@ -106,6 +106,12 @@
     <Compile Include="RecentsForm.Designer.cs">
       <DependentUpon>RecentsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RecentsTextChange.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RecentsTextChange.Designer.cs">
+      <DependentUpon>RecentsTextChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RecentsForm.resx">
       <DependentUpon>RecentsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RecentsTextChange.resx">
+      <DependentUpon>RecentsTextChange.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>

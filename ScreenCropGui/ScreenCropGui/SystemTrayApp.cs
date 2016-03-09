@@ -66,181 +66,6 @@ namespace ScreenCropGui
             Clipboard.SetText(text);
         }
 
-        //private static void fillRecents()
-        //{
-        //    // fillRecents method will fill the recents submenu
-        //    int i = 0;
-
-        //    // This condition is here in the case that we need to refresh 
-        //    if ((trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Count > 0)
-        //    {
-        //        Thread clearRecentsThread = new Thread(new ThreadStart(clearRecentsSubmenu));
-        //        clearRecentsThread.SetApartmentState(ApartmentState.STA);
-        //        clearRecentsThread.Start();
-
-        //        infoDict.Clear();
-        //    }
-
-        //    // Go over every screenshot we took, and add it a dictionary and a into the recents submenu
-        //    foreach (var info in capturedInfo)
-        //    {
-        //        // Register events
-        //        ToolStripItem subItem = new ToolStripMenuItem();
-        //        subItem.MouseDown += SubItem_MouseDown;
-        //        subItem.MouseEnter += SubItem_MouseEnter;
-        //        subItem.MouseLeave += SubItem_MouseLeave;
-
-        //        // Use title if available
-        //        if (info.Title == string.Empty)
-        //        {
-        //            subItem.Text = info.Name;
-        //        }
-        //        else
-        //        {
-        //            subItem.Text = info.Title;
-        //        }
-
-        //        // Add item to dropdown menu
-        //        Thread addMenuItemThread = new Thread(() => addMenuItemToRecents(subItem));
-        //        addMenuItemThread.SetApartmentState(ApartmentState.STA);
-        //        addMenuItemThread.Start();
-
-        //        //(trayMenu.Items[0] as ToolStripMenuItem).DropDownItems.Add(subItem);
-
-        //        // Set tooltip text for each item
-        //        String toolTipText = "Name: " + info.Name + Environment.NewLine +
-        //                             "Location: " + info.Save_Location + Environment.NewLine +
-        //                             "URL: " + info.Url;
-
-        //        // Add item to dictionary and set the tag and the tool tip text
-        //        infoDict.Add(i, info);
-        //        (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems[i].Tag = i;
-        //        (trayMenu.Items[0] as ToolStripMenuItem).DropDownItems[i++].ToolTipText = toolTipText;
-        //    }
-        //}
-
-        //private void Load_Settings()
-        //{
-        //    // Check if settings file exists. if that's the case, initialize cropperSettings variable.
-        //    // Otherwise, initialize cropperSettings using defualt parameters
-        //    if (File.Exists(@"settings.json"))
-        //    {
-        //        JObject settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
-        //        cropperSettings = new settingsClass
-        //        {
-        //            save_location = settingsJSON["save_location"].ToString(),
-        //            continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
-        //            imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
-        //            rec_color = settingsJSON["rec_color"].ToString(),
-        //            rec_width = Convert.ToDecimal(settingsJSON["rec_width"]),
-        //            image_format = settingsJSON["image_format"].ToString()
-        //        };
-
-        //    }
-        //    else
-        //    {
-        //        cropperSettings = new settingsClass
-        //        {
-        //            save_location = AppDomain.CurrentDomain.BaseDirectory.ToString() + "Screen Shots",
-        //            continuous_mode = false,
-        //            imgur_upload = true,
-        //            rec_color = "#ff3535",
-        //            rec_width = Convert.ToDecimal(1.3),
-        //            image_format = ".png"
-        //        };
-
-        //        string json = JsonConvert.SerializeObject(cropperSettings, Formatting.Indented);
-        //        File.WriteAllText("settings.json", json);
-        //    }
-        //}
-
-        //private void Load_Screenshot_Logs()
-        //{
-        //    // Check if captured screenshots log file exists. if so, read it and deserialize it.
-        //    // Otherwise, do nothing.
-        //    // SIDE NOTE: i dont know if that's the right thing to do. i havn't decided yet if i'm
-        //    // going to create the file right now or just check if the info list has any content in it later.
-
-        //    string name = string.Empty;
-        //    string title = string.Empty;
-        //    string save_location = string.Empty;
-        //    string url = string.Empty;
-
-        //    if (File.Exists(@"Logs\Captured.json"))
-        //    {
-        //        var json = File.ReadAllText(@"Logs\Captured.json");
-        //        var objects = JArray.Parse(json);
-
-        //        foreach (JObject capturedinfo in objects)
-        //        {
-        //            // Extract data from json
-        //            foreach (KeyValuePair<string, JToken> screenshot in capturedinfo)
-        //            {
-        //                if (screenshot.Key.Equals("Name"))
-        //                {
-        //                    name = screenshot.Value.ToString();
-        //                }
-        //                if (screenshot.Equals("Title"))
-        //                {
-        //                    title = screenshot.Value.ToString();
-        //                }
-        //                if (screenshot.Key.Equals("Save_Location"))
-        //                {
-        //                    save_location = screenshot.Value.ToString();
-        //                }
-        //                if (screenshot.Key.Equals("Url"))
-        //                {
-        //                    url = screenshot.Value.ToString();
-        //                }
-
-        //            }
-
-        //            // Construct info container
-        //            screenshotInfo info = new screenshotInfo
-        //            {
-        //                Name = name,
-        //                Title = title,
-        //                Save_Location = save_location,
-        //                Url = url
-        //            };
-
-        //            // Add colected data to info collection
-        //            capturedInfo.Add(info);
-        //        }
-
-        //        //List<screenshotInfo> deserializedProduct = JsonConvert.DeserializeObject<settingsClass>(json);
-        //    }
-        //}
-
-        //private void Log_ScreenShot_Info(string name, string save_location, string url)
-        //{
-        //    screenshotInfo imageInfo = new screenshotInfo
-        //    {
-        //        Title = string.Empty,
-        //        Name = name,
-        //        Save_Location = save_location,
-        //        Url = url
-        //    };
-
-        //    capturedInfo.Add(imageInfo);
-        //}
-
-        //private void Save_ScreenShot_Logs()
-        //{
-        //    // If there are any logs 
-        //    if (capturedInfo.Count > 0)
-        //    {
-        //        FileInfo file = new FileInfo(@"Logs\\Captured.json");
-
-        //        // Create directory if doesn't exists
-        //        file.Directory.Create();
-
-        //        // Serialize the list to a json string
-        //        string json = JsonConvert.SerializeObject(capturedInfo, Formatting.Indented);
-        //        File.WriteAllText(file.FullName, json);
-        //    }
-        //}
-
         void GlobalHook_KeyDown(object sender, KeyEventArgs e)
         {
             // Capture printscreen key press using the global keyboard hook event.
@@ -278,6 +103,8 @@ namespace ScreenCropGui
                     data.Log_ScreenShot_Info(data.LastName, data.CropperSettings.save_location, data.LastLink);
                     data.LastLink = string.Empty;
                     data.LastName = string.Empty;
+                    data.Save_ScreenShot_Logs();
+                    data.Load_Screenshot_Logs();
 
                 }
                 catch (Exception ex)
@@ -318,8 +145,11 @@ namespace ScreenCropGui
 
         protected void onRecents(object sender, EventArgs e)
         {
-            RecentsForm recents = new RecentsForm();
-            recents.Show();
+            if (data.CapturedInfo.Count != 0)
+            {
+                RecentsForm recents = new RecentsForm();
+                recents.Show();
+            }
         }
 
         protected override void OnLoad(EventArgs e)

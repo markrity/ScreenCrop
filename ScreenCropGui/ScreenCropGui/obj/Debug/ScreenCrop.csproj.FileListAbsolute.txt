@@ -17,3 +17,4 @@ C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\Screen
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.SysTrayApp.resources
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.RecentsForm.resources
 C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCrop.csprojResolveAssemblyReference.cache
+C:\Users\Michael\Desktop\ScreenCrop\ScreenCropGui\ScreenCropGui\obj\Debug\ScreenCropGui.RecentsTextChange.resources

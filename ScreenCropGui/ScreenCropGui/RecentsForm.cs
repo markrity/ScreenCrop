@@ -26,9 +26,9 @@ namespace ScreenCropGui
             int buttonAmount = data.CapturedInfo.Count;
             int y = 0;
             int x = 0;
-            int cellNum = 0;            
+            int cellNum = 0;
 
-            while (buttonAmount >= xDim )
+            while (buttonAmount >= xDim)
             {
                 buttonAmount -= xDim;
                 yDim++;
@@ -57,6 +57,8 @@ namespace ScreenCropGui
                     Text = text,
                     TextAlign = ContentAlignment.BottomCenter,
                     Font = new Font(Font.Name, Font.Size, FontStyle.Bold),
+                    ForeColor = Color.Black,
+                    FlatStyle = FlatStyle.Flat,
                     BackColor = Color.White,
                     Location = new Point(x * buttonSize + 10, y * buttonSize + 10),
                     Parent = panel1
@@ -68,9 +70,9 @@ namespace ScreenCropGui
                     buttonMatrix[y, x].BackgroundImage = background;
                     buttonMatrix[y, x].BackgroundImageLayout = ImageLayout.Zoom;
                 }
-                catch{}
+                catch { }
 
-                buttonMatrix[y, x].MouseDown += RecentsForm_MouseDown;
+                buttonMatrix[y, x].MouseUp += RecentsForm_MouseUp;
 
                 x++;
 
@@ -85,26 +87,53 @@ namespace ScreenCropGui
         private void reSize()
         {
             int buttonAmount = data.CapturedInfo.Count;
-            this.Size = new Size(buttonSize * buttonAmount, buttonSize * yDim + 60);
+            if (buttonAmount >= 8)
+            {
+                buttonAmount = xDim;
+            }
+            this.Size = new Size(buttonSize * buttonAmount + 35, buttonSize * yDim + 60);
         }
 
-        private void RecentsForm_MouseDown(object sender, MouseEventArgs e)
+        private void RecentsForm_MouseUp(object sender, MouseEventArgs e)
         {
             if (sender is Button)
             {
                 Button b = sender as Button;
                 int tag = Convert.ToInt32(b.Tag);
 
-                try
+                if (e.Button == MouseButtons.Left)
                 {
-                    Clipboard.Clear();
-                    Clipboard.SetText(data.CapturedInfo[tag].Url);
-                    SysTrayApp.trayIcon.BalloonTipText = data.CapturedInfo[tag].Name + " Added to clipboard";
-                    SysTrayApp.trayIcon.ShowBalloonTip(1500);                    
+                    try
+                    {
+                        Clipboard.Clear();
+                        Clipboard.SetText(data.CapturedInfo[tag].Url);
+                        SysTrayApp.trayIcon.BalloonTipText = data.CapturedInfo[tag].Name + " Added to clipboard";
+                        SysTrayApp.trayIcon.ShowBalloonTip(1500);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
-                catch(Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
+                    this.Hide();
+                    using (RecentsTextChange form = new RecentsTextChange(MousePosition.X, MousePosition.Y))
+                    {
+                        form.ShowDialog();
+                        DialogResult dr = form.DialogResult;
+                        if (dr == DialogResult.OK)
+                        {
+                            if (form.text != string.Empty)
+                            {
+                                data.CapturedInfo[tag].Title = form.text;
+                            }
+                        }
+                        RecentsForm recents = new RecentsForm();
+                        this.Close();
+                        recents.Show();
+                    }
+                    
                 }
             }
         }

@@ -152,6 +152,11 @@ namespace ScreenCropGui
             string save_location = string.Empty;
             string url = string.Empty;
 
+            if (capturedInfo.Count != 0)
+            {
+                capturedInfo.Clear();
+            }
+
             if (File.Exists(@"Logs\Captured.json"))
             {
                 var json = File.ReadAllText(@"Logs\Captured.json");
