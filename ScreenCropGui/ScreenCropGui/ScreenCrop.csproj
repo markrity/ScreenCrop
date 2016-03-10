@@ -88,6 +88,7 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataHandler.cs" />
     <Compile Include="Help.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +100,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RecentsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RecentsForm.Designer.cs">
+      <DependentUpon>RecentsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecentsTextChange.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RecentsTextChange.Designer.cs">
+      <DependentUpon>RecentsTextChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,7 +119,7 @@
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
     <Compile Include="globalKeyboardHook.cs" />
-    <Compile Include="Program.cs">
+    <Compile Include="SystemTrayApp.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,11 +129,17 @@
     <EmbeddedResource Include="Help.resx">
       <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="RecentsForm.resx">
+      <DependentUpon>RecentsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RecentsTextChange.resx">
+      <DependentUpon>RecentsTextChange.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Program.resx">
-      <DependentUpon>Program.cs</DependentUpon>
+    <EmbeddedResource Include="SystemTrayApp.resx">
+      <DependentUpon>SystemTrayApp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -128,6 +147,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Packages.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

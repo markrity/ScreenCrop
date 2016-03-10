@@ -1,7 +1,7 @@
 # Screen Crop
 This tool allows you to easily crop and upload screen shots.
 
-Download last stable version [here](http://www.megafileupload.com/ap5e/Install.rar)
+Download last stable version [here](http://www.megafileupload.com/6ge1/Installer.rar)
 
 ![Screen Crop action gif](https://github.com/InviBear/ScreenCrop/blob/master/Readme/ScreenCropAction.gif)
 
@@ -14,9 +14,12 @@ Download last stable version [here](http://www.megafileupload.com/ap5e/Install.r
 * Automaticly upload the screenshot to imgur.com.
 * Place the link of the uploaded image to your clipboard (CRTL+V).
 * Customize cropping square to your liking.
+* View saved screenshots.
+* Set titles and remove screen shots from "recents" history.
 
 ![Image of ScreenCrop settings panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Settings.png)
 
+![Image of ScreenCrop recents panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Recents.png)
 
 #### How to build:
 1. Download project.
@@ -29,7 +32,7 @@ Download last stable version [here](http://www.megafileupload.com/ap5e/Install.r
 #### TODO:
 
 - [X] Add visualization to settings menu.
-- [ ] Log captured screenshots, save locations and links.
-- [ ] Investigate random crashes.
+- [X] Log captured screenshots, save locations and links.
+- [ ] ~~Investigate random crashes.~~ (GlobalKeyHook sometimes crashes, dont know why yet)
 - [ ] Document gui counterpart.
 - [ ] Figure out how to make cropper part load faster.

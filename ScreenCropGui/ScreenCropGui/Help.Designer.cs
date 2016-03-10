@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Help));
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox = new System.Windows.Forms.RichTextBox();
@@ -73,7 +74,9 @@
             this.ClientSize = new System.Drawing.Size(348, 262);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Help";
+            this.ShowInTaskbar = false;
             this.Text = "Help";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
