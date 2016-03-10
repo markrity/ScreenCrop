@@ -73,11 +73,12 @@ namespace ScreenCropGui
                 catch { }
 
                 buttonMatrix[y, x].MouseUp += RecentsForm_MouseUp;
-                ContextMenu menu = new ContextMenu();
-                menu.MenuItems.Add("Delete", new EventHandler(DeleteIndividualRecent));
-                menu.MenuItems.Add("Set title", new EventHandler(SetTitle));
-                menu.Tag = cellNum++; 
-                buttonMatrix[y, x].ContextMenu = menu;
+                ContextMenuStrip menu = new ContextMenuStrip();
+                menu.Tag = cellNum++;
+                menu.Items.Add("Set title", null, new EventHandler(SetTitle));
+                menu.Items.Add("Delete", null, new EventHandler(DeleteIndividualRecent));
+                
+                buttonMatrix[y, x].ContextMenuStrip = menu;
 
                 x++;
 
@@ -100,7 +101,16 @@ namespace ScreenCropGui
                 {
                     if (form.text != string.Empty)
                     {
-                        data.CapturedInfo[Convert.ToInt32(((MenuItem)sender).Tag)].Title = form.text;
+                        // Try to cast the sender to a ToolStripItem
+                        ToolStripItem menuItem = sender as ToolStripItem;
+                        if (menuItem != null)
+                        {
+                            // Retrieve the ContextMenuStrip that owns this ToolStripItem
+                            ContextMenuStrip owner = menuItem.Owner as ContextMenuStrip;
+                            int index = Convert.ToInt32(owner.Tag);
+                            data.CapturedInfo[Convert.ToInt32(index)].Title = form.text;
+                            data.Save_ScreenShot_Logs();
+                        }
                     }
                 }
                 RecentsForm recents = new RecentsForm();
@@ -117,7 +127,15 @@ namespace ScreenCropGui
                 this.Hide();
                 try
                 {
-                    data.CapturedInfo.RemoveAt(Convert.ToInt32(((MenuItem)sender).Tag));
+                    // Try to cast the sender to a ToolStripItem
+                    ToolStripItem menuItem = sender as ToolStripItem;
+                    if (menuItem != null)
+                    {
+                        // Retrieve the ContextMenuStrip that owns this ToolStripItem
+                        ContextMenuStrip owner = menuItem.Owner as ContextMenuStrip;
+                        int index = Convert.ToInt32(owner.Tag);
+                        data.CapturedInfo.RemoveAt(index);
+                    }
                 }
                 catch (Exception ex)
                 {

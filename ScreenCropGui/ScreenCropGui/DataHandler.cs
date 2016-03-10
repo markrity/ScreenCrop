@@ -181,7 +181,7 @@ namespace ScreenCropGui
                         {
                             name = screenshot.Value.ToString();
                         }
-                        if (screenshot.Equals("Title"))
+                        if (screenshot.Key.Equals("Title"))
                         {
                             title = screenshot.Value.ToString();
                         }
