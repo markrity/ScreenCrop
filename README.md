@@ -18,6 +18,7 @@ Download last stable version [here](http://www.megafileupload.com/6ge1/Installer
 * Set titles and remove screen shots from "recents" history.
 
 ![Image of ScreenCrop settings panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Settings.png)
+
 ![Image of ScreenCrop recents panel](https://github.com/InviBear/ScreenCrop/blob/master/Readme/Recents.png)
 
 #### How to build:
