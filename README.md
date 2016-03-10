@@ -1,7 +1,7 @@
 # Screen Crop
 This tool allows you to easily crop and upload screen shots.
 
-Download last stable version [here](http://www.megafileupload.com/6ge1/Installer.rar)
+Download last stable version [here](http://s000.tinyupload.com/index.php?file_id=07971557725903747915)
 
 ![Screen Crop action gif](https://github.com/InviBear/ScreenCrop/blob/master/Readme/ScreenCropAction.gif)
 
