@@ -42,5 +42,13 @@ namespace ScreenCropGui
         {
             this.SetDesktopLocation(mousepositionX, mousepositionY);
         }
+
+        private void textBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                buttonSave_Click(sender, e);
+            }
+        }
     }
 }

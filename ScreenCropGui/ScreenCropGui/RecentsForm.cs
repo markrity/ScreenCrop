@@ -17,11 +17,11 @@ namespace ScreenCropGui
         public RecentsForm()
         {
             InitializeComponent();
-            init_Buttons();
+            initButtons();
             reSize();
         }
 
-        private void init_Buttons()
+        private void initButtons()
         {
             int buttonAmount = data.CapturedInfo.Count;
             int y = 0;
@@ -53,7 +53,7 @@ namespace ScreenCropGui
                 {
                     Size = new Size(buttonSize, buttonSize),
                     AutoSize = false,
-                    Tag = cellNum++,
+                    Tag = cellNum,
                     Text = text,
                     TextAlign = ContentAlignment.BottomCenter,
                     Font = new Font(Font.Name, Font.Size, FontStyle.Bold),
@@ -73,6 +73,11 @@ namespace ScreenCropGui
                 catch { }
 
                 buttonMatrix[y, x].MouseUp += RecentsForm_MouseUp;
+                ContextMenu menu = new ContextMenu();
+                menu.MenuItems.Add("Delete", new EventHandler(DeleteIndividualRecent));
+                menu.MenuItems.Add("Set title", new EventHandler(SetTitle));
+                menu.Tag = cellNum++; 
+                buttonMatrix[y, x].ContextMenu = menu;
 
                 x++;
 
@@ -84,6 +89,54 @@ namespace ScreenCropGui
             }
         }
 
+        private void SetTitle(object sender, EventArgs e)
+        {
+            this.Hide();
+            using (RecentsTextChange form = new RecentsTextChange(MousePosition.X, MousePosition.Y))
+            {
+                form.ShowDialog();
+                DialogResult dr = form.DialogResult;
+                if (dr == DialogResult.OK)
+                {
+                    if (form.text != string.Empty)
+                    {
+                        data.CapturedInfo[Convert.ToInt32(((MenuItem)sender).Tag)].Title = form.text;
+                    }
+                }
+                RecentsForm recents = new RecentsForm();
+                this.Close();
+                recents.Show();
+            }
+        }
+
+        private void DeleteIndividualRecent(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Saved screenshot will be premenantly deleted, Are you sure?", string.Empty, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogResult == DialogResult.Yes)
+            {
+                this.Hide();
+                try
+                {
+                    data.CapturedInfo.RemoveAt(Convert.ToInt32(((MenuItem)sender).Tag));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                
+                if (data.CapturedInfo.Count > 0)
+                {
+                    RecentsForm recents = new RecentsForm();
+                    this.Close();
+                    recents.Show();
+                }
+                else
+                {
+                    this.Close();
+                }
+            }
+        }
+
         private void reSize()
         {
             int buttonAmount = data.CapturedInfo.Count;
@@ -91,7 +144,8 @@ namespace ScreenCropGui
             {
                 buttonAmount = xDim;
             }
-            this.Size = new Size(buttonSize * buttonAmount + 35, buttonSize * yDim + 60);
+            this.Size = new Size(buttonSize * buttonAmount + 35, buttonSize * yDim + 60 + buttonClear.Height + 10);
+            buttonClear.Location = new Point(this.Size.Width - buttonClear.Size.Width - 25, this.Size.Height - buttonClear.Size.Height - 45);
         }
 
         private void RecentsForm_MouseUp(object sender, MouseEventArgs e)
@@ -115,26 +169,17 @@ namespace ScreenCropGui
                         MessageBox.Show(ex.Message);
                     }
                 }
-                else
-                {
-                    this.Hide();
-                    using (RecentsTextChange form = new RecentsTextChange(MousePosition.X, MousePosition.Y))
-                    {
-                        form.ShowDialog();
-                        DialogResult dr = form.DialogResult;
-                        if (dr == DialogResult.OK)
-                        {
-                            if (form.text != string.Empty)
-                            {
-                                data.CapturedInfo[tag].Title = form.text;
-                            }
-                        }
-                        RecentsForm recents = new RecentsForm();
-                        this.Close();
-                        recents.Show();
-                    }
-                    
-                }
+            }
+        }
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("All saved data will be lost, Are you sure?", string.Empty, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogResult == DialogResult.Yes)
+            {
+                data.CapturedInfo.Clear();
+                data.Save_ScreenShot_Logs();
+                this.Close();
             }
         }
     }

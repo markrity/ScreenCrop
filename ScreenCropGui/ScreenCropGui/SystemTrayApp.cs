@@ -145,10 +145,14 @@ namespace ScreenCropGui
 
         protected void onRecents(object sender, EventArgs e)
         {
-            if (data.CapturedInfo.Count != 0)
+            if (data.CapturedInfo.Count > 0)
             {
                 RecentsForm recents = new RecentsForm();
                 recents.Show();
+            }
+            else if(data.CapturedInfo.Count <= 0)
+            {
+                MessageBox.Show("There are no recent screenshots");
             }
         }
 

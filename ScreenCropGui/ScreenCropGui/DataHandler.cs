@@ -240,6 +240,13 @@ namespace ScreenCropGui
                 string json = JsonConvert.SerializeObject(capturedInfo, Formatting.Indented);
                 File.WriteAllText(file.FullName, json);
             }
+            else if (capturedInfo.Count == 0)
+            {
+                if (File.Exists(@"Logs\\Captured.json"))
+                {
+                    File.Delete(@"Logs\\Captured.json");
+                }
+            }
         }
     }
 
