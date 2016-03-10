@@ -32,7 +32,7 @@ Download last stable version [here](http://www.megafileupload.com/6ge1/Installer
 #### TODO:
 
 - [X] Add visualization to settings menu.
-- [ ] Log captured screenshots, save locations and links.
-- [ ] Investigate random crashes.
+- [X] Log captured screenshots, save locations and links.
+- [ ] ~~Investigate random crashes.~~ (GlobalKeyHook sometimes crashes, dont know why yet)
 - [ ] Document gui counterpart.
 - [ ] Figure out how to make cropper part load faster.
