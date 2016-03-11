@@ -30,8 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.thicknessTextbox = new System.Windows.Forms.TextBox();
             this.buttonColor = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -44,14 +44,15 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.numericUpDown1);
             this.groupBox1.Controls.Add(this.pictureBox1);
-            this.groupBox1.Controls.Add(this.thicknessTextbox);
             this.groupBox1.Controls.Add(this.buttonColor);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
@@ -62,6 +63,25 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cropping Square Settings";
             // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.DecimalPlaces = 1;
+            this.numericUpDown1.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericUpDown1.Location = new System.Drawing.Point(65, 44);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(87, 20);
+            this.numericUpDown1.TabIndex = 4;
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(162, 19);
@@ -70,14 +90,6 @@
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
-            // 
-            // thicknessTextbox
-            // 
-            this.thicknessTextbox.Location = new System.Drawing.Point(65, 44);
-            this.thicknessTextbox.Name = "thicknessTextbox";
-            this.thicknessTextbox.Size = new System.Drawing.Size(87, 20);
-            this.thicknessTextbox.TabIndex = 3;
-            this.thicknessTextbox.TextChanged += new System.EventHandler(this.widthTextbox_TextChanged);
             // 
             // buttonColor
             // 
@@ -196,6 +208,7 @@
             this.Text = "Settings";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -206,7 +219,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox thicknessTextbox;
         private System.Windows.Forms.Button buttonColor;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
@@ -219,5 +231,6 @@
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }

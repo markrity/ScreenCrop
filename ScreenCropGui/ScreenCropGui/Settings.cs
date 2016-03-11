@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq; //Added to use AsEnumerable function.
 
 namespace ScreenCropGui
 {
@@ -32,7 +33,7 @@ namespace ScreenCropGui
                 Color color = ColorTranslator.FromHtml(cropSettings.rec_color);
                 buttonColor.BackColor = color;
 
-                thicknessTextbox.Text = cropSettings.rec_width.ToString();
+                numericUpDown1.Value = cropSettings.rec_width;
                 if (string.IsNullOrEmpty(cropSettings.save_location))
                 {
                     saveToTextBox.Text = AppDomain.CurrentDomain.BaseDirectory + @"\Screen Shots";
@@ -50,10 +51,6 @@ namespace ScreenCropGui
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
                 buttonColor.BackColor = colorDialog.Color;
-                if (thicknessTextbox.Text != string.Empty)
-                {
-                    pictureBox1.Invalidate();
-                }
             }
         }
 
@@ -80,7 +77,7 @@ namespace ScreenCropGui
             this.cropSettings.continuous_mode = false;
             this.cropSettings.imgur_upload = Convert.ToBoolean(this.checkBoxUpload.CheckState);
             this.cropSettings.rec_color = HexConverter(buttonColor.BackColor);
-            this.cropSettings.rec_width = Convert.ToDecimal(thicknessTextbox.Text);
+            this.cropSettings.rec_width = numericUpDown1.Value;
             this.cropSettings.image_format = ".png";
 
             string json = JsonConvert.SerializeObject(this.cropSettings, Formatting.Indented);
@@ -96,20 +93,19 @@ namespace ScreenCropGui
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            Pen pen = new Pen(buttonColor.BackColor, float.Parse(thicknessTextbox.Text));
+            decimal d = numericUpDown1.Value;
+            float thickness = (float)d;
+
+            Pen pen = new Pen(buttonColor.BackColor, thickness);
             graphics.DrawRectangle(pen, new Rectangle(pictureBox1.ClientSize.Width / 8,
                                                       pictureBox1.ClientSize.Height / 8,
                                                       Convert.ToInt32(pictureBox1.ClientSize.Width * 0.80),
                                                       Convert.ToInt32(pictureBox1.ClientSize.Height * 0.80)));
         }
 
-        private void widthTextbox_TextChanged(object sender, EventArgs e)
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            if (thicknessTextbox.Text != string.Empty)
-            {
-                pictureBox1.Invalidate();
-
-            }
+            pictureBox1.Invalidate();
         }
     }
 }
