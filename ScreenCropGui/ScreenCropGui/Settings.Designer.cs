@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.thicknessUpDown = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.buttonColor = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -44,14 +44,14 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.thicknessUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.numericUpDown1);
+            this.groupBox1.Controls.Add(this.thicknessUpDown);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.buttonColor);
             this.groupBox1.Controls.Add(this.label2);
@@ -63,24 +63,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cropping Square Settings";
             // 
-            // numericUpDown1
+            // thicknessUpDown
             // 
-            this.numericUpDown1.DecimalPlaces = 1;
-            this.numericUpDown1.Increment = new decimal(new int[] {
+            this.thicknessUpDown.DecimalPlaces = 1;
+            this.thicknessUpDown.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.numericUpDown1.Location = new System.Drawing.Point(65, 44);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.thicknessUpDown.Location = new System.Drawing.Point(65, 44);
+            this.thicknessUpDown.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(87, 20);
-            this.numericUpDown1.TabIndex = 4;
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.thicknessUpDown.Name = "thicknessUpDown";
+            this.thicknessUpDown.Size = new System.Drawing.Size(87, 20);
+            this.thicknessUpDown.TabIndex = 4;
+            this.thicknessUpDown.ValueChanged += new System.EventHandler(this.thicknessUpDown_ValueChanged);
             // 
             // pictureBox1
             // 
@@ -208,7 +208,7 @@
             this.Text = "Settings";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.thicknessUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -231,6 +231,6 @@
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown thicknessUpDown;
     }
 }

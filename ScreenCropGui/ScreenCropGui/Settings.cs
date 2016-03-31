@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Linq; //Added to use AsEnumerable function.
 
 namespace ScreenCropGui
 {
@@ -18,22 +17,12 @@ namespace ScreenCropGui
             this.ShowIcon = true;
             if (File.Exists(@"settings.json"))
             {
-                //JObject settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
-                //cropSettings = new settingsClass
-                //{
-                //    save_location = settingsJSON["save_location"].ToString(),
-                //    continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
-                //    imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
-                //    rec_color = settingsJSON["rec_color"].ToString(),
-                //    rec_width = Convert.ToDecimal(settingsJSON["rec_width"]),
-                //    image_format = settingsJSON["image_format"].ToString()
-                //};
                 cropSettings = settings;
 
                 Color color = ColorTranslator.FromHtml(cropSettings.rec_color);
                 buttonColor.BackColor = color;
 
-                numericUpDown1.Value = cropSettings.rec_width;
+                thicknessUpDown.Value = cropSettings.rec_width;
                 if (string.IsNullOrEmpty(cropSettings.save_location))
                 {
                     saveToTextBox.Text = AppDomain.CurrentDomain.BaseDirectory + @"\Screen Shots";
@@ -77,7 +66,7 @@ namespace ScreenCropGui
             this.cropSettings.continuous_mode = false;
             this.cropSettings.imgur_upload = Convert.ToBoolean(this.checkBoxUpload.CheckState);
             this.cropSettings.rec_color = HexConverter(buttonColor.BackColor);
-            this.cropSettings.rec_width = numericUpDown1.Value;
+            this.cropSettings.rec_width = thicknessUpDown.Value;
             this.cropSettings.image_format = ".png";
 
             string json = JsonConvert.SerializeObject(this.cropSettings, Formatting.Indented);
@@ -93,9 +82,7 @@ namespace ScreenCropGui
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            decimal d = numericUpDown1.Value;
-            float thickness = (float)d;
-
+            float thickness = (float)thicknessUpDown.Value;
             Pen pen = new Pen(buttonColor.BackColor, thickness);
             graphics.DrawRectangle(pen, new Rectangle(pictureBox1.ClientSize.Width / 8,
                                                       pictureBox1.ClientSize.Height / 8,
@@ -103,7 +90,7 @@ namespace ScreenCropGui
                                                       Convert.ToInt32(pictureBox1.ClientSize.Height * 0.80)));
         }
 
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        private void thicknessUpDown_ValueChanged(object sender, EventArgs e)
         {
             pictureBox1.Invalidate();
         }

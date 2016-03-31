@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
 
 namespace ScreenCropGui
 {
@@ -111,16 +112,41 @@ namespace ScreenCropGui
             // Otherwise, initialize cropperSettings using defualt parameters
             if (File.Exists(@"settings.json"))
             {
-                JObject settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
-                cropperSettings = new settingsClass
+                
+                JObject settingsJSON = null;
+                try
                 {
-                    save_location = settingsJSON["save_location"].ToString(),
-                    continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
-                    imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
-                    rec_color = settingsJSON["rec_color"].ToString(),
-                    rec_width = Convert.ToDecimal(settingsJSON["rec_width"]),
-                    image_format = settingsJSON["image_format"].ToString()
-                };
+                    settingsJSON = JObject.Parse(File.ReadAllText("settings.json"));
+                }
+                catch (Exception e) //catching exception if setting file changed a value to NULL for example.
+                {
+                    MessageBox.Show("Setting File Corrupted.");
+                    Environment.Exit(1);
+                }
+                try
+                {
+                    cropperSettings = new settingsClass
+                    {
+                        save_location = settingsJSON["save_location"].ToString(),
+                        continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
+                        imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
+                        rec_color = settingsJSON["rec_color"].ToString(),
+                        image_format = settingsJSON["image_format"].ToString(),
+                        rec_width = Convert.ToDecimal(settingsJSON["rec_width"])
+                    };
+                }
+                catch (ArgumentException e)  //handles exception when "rec_width" in settings file is corrupted.
+                {
+                    cropperSettings = new settingsClass
+                    {
+                        save_location = settingsJSON["save_location"].ToString(),
+                        continuous_mode = Convert.ToBoolean(settingsJSON["continuous_mode"]),
+                        imgur_upload = Convert.ToBoolean(settingsJSON["imgur_upload"]),
+                        rec_color = settingsJSON["rec_color"].ToString(),
+                        image_format = settingsJSON["image_format"].ToString(),
+                        rec_width = Convert.ToDecimal("1.3")
+                    };
+                }
 
             }
             else
